@@ -41,15 +41,14 @@ LOG_OBJ.propagate = False
 handler = logging.FileHandler(log_file)
 handler.setLevel(logging.INFO)
 # create a logging format
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
 # add the handlers to the logger
 LOG_OBJ.addHandler(handler)
 
 
-def sendToLog(text: str='', level: str='INFO') -> None:
+def sendToLog(text: str = '', level: str = 'INFO') -> None:
     if level == 'INFO':
         LOG_OBJ.info(text)
     elif level == 'ERROR':

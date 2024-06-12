@@ -72,6 +72,7 @@ SERVER_URI_FORMAT = 'http://{}:{:d}/rpc'
 server_uri = SERVER_URI_FORMAT.format(host, port)
 server = xmlrpc.client.ServerProxy(server_uri, allow_none=True)
 
+
 # start aria2 with RPC
 def startAria() -> str:
     # return that starting is successful or not!
@@ -89,6 +90,7 @@ def aria2Version() -> str:
         answer = 'did not respond'
 
     return answer
+
 
 # this function sends download request to aria2
 def downloadAria(gid: str, parent: QWidget) -> bool | None:
@@ -131,7 +133,7 @@ def downloadAria(gid: str, parent: QWidget) -> bool | None:
         if limit_unit == 'K':
             limit_number = round(limit_number)
         else:
-            limit_number = round(1024*limit_number)
+            limit_number = round(1024 * limit_number)
             limit_unit = 'K'
         limit = str(limit_number) + limit_unit
 
@@ -180,10 +182,9 @@ def downloadAria(gid: str, parent: QWidget) -> bool | None:
             if limit_unit == 'K':
                 limit_number = round(limit_number)
             else:
-                limit_number = round(1024*limit_number)
+                limit_number = round(1024 * limit_number)
                 limit_unit = 'K'
             limit = str(limit_number) + limit_unit
-
 
         # set start_time value to None in data_base!
         parent.persepolis_db.setDefaultGidInAddlinkTable(gid, start_time=True)
@@ -203,9 +204,7 @@ def downloadAria(gid: str, parent: QWidget) -> bool | None:
 
     # check is download_path is existed
     if os.path.isdir(download_path):
-
         if os.lstat(download_path).st_dev != os.lstat(download_path_temp).st_dev:
-
             # Create folder and give new temp address from makeTempDownloadDir function.
             # Please checkout osCommands.py for more information.
             download_path_temp = makeTempDownloadDir(download_path)
@@ -258,7 +257,6 @@ def downloadAria(gid: str, parent: QWidget) -> bool | None:
                 endTime(end_time, gid, parent)
 
         except Exception:
-
             # write error status in data_base
             download_dict = {'gid': gid, 'status': DownloadStatus.Error}
             parent.persepolis_db.updateDownloadTable([download_dict])
@@ -275,13 +273,25 @@ def downloadAria(gid: str, parent: QWidget) -> bool | None:
         ghermez.sendToLog('Download Canceled', 'INFO')
         return None
 
+
 # this function returns list of download information
-def tellActive() -> (tuple[None, None] | tuple[list, list]):
+def tellActive() -> tuple[None, None] | tuple[list, list]:
     # get download information from aria2
     try:
         downloads_status = server.aria2.tellActive(
-            ['gid', 'status', 'connections', 'errorCode', 'errorMessage',
-             'downloadSpeed', 'dir', 'totalLength', 'completedLength', 'files'])
+            [
+                'gid',
+                'status',
+                'connections',
+                'errorCode',
+                'errorMessage',
+                'downloadSpeed',
+                'dir',
+                'totalLength',
+                'completedLength',
+                'files',
+            ],
+        )
     except Exception:
         return None, None
 
@@ -300,20 +310,32 @@ def tellActive() -> (tuple[None, None] | tuple[list, list]):
 
     return gid_list, download_status_list
 
+
 # this function returns download status that specified by gid!
-def tellStatus(gid: str, parent: QWidget) -> (dict[str, Any] | None):
+def tellStatus(gid: str, parent: QWidget) -> dict[str, Any] | None:
     # get download status from aria2
     try:
         download_status = server.aria2.tellStatus(
-            gid, ['status', 'connections', 'errorCode', 'errorMessage', 'downloadSpeed',
-                  'connections', 'dir', 'totalLength', 'completedLength', 'files'])
+            gid,
+            [
+                'status',
+                'connections',
+                'errorCode',
+                'errorMessage',
+                'downloadSpeed',
+                'connections',
+                'dir',
+                'totalLength',
+                'completedLength',
+                'files',
+            ],
+        )
         download_status['gid'] = str(gid)
     except Exception:
         return None
 
     # convert download_status in desired format
     converted_info_dict = convertDownloadInformation(download_status)
-
 
     # if download has completed , then move file to the download folder
     if converted_info_dict['status'] == DownloadStatus.Complete:
@@ -330,7 +352,10 @@ def tellStatus(gid: str, parent: QWidget) -> (dict[str, Any] | None):
         # then subfolder must added to download path.
         if persepolis_setting.value('settings/download_path') == download_path:
             download_path = ghermez.findDownloadPath(
-                file_name, download_path, persepolis_setting.value('settings/subfolder'))
+                file_name,
+                download_path,
+                persepolis_setting.value('settings/subfolder'),
+            )
 
         # find temp download path
         file_status = str(download_status['files'])
@@ -370,6 +395,7 @@ def tellStatus(gid: str, parent: QWidget) -> (dict[str, Any] | None):
     # return results in dictionary format
     return converted_info_dict
 
+
 # this function converts download information that received from aria2 in desired format.
 # input format must be a dictionary.
 def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any]:
@@ -381,7 +407,7 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
         file_status = ast.literal_eval(file_status)
         path = str(file_status['path'])
         file_name = urllib.parse.unquote(os.path.basename(path))
-        if not(file_name):
+        if not (file_name):
             file_name = None
 
         uris = file_status['uris']
@@ -389,12 +415,11 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
         link = uri['uri']
 
     except Exception:
-
         file_name = None
         link = None
 
     for i in download_status:
-        if not(download_status[i]):
+        if not (download_status[i]):
             download_status[i] = None
 
     # find file_size
@@ -410,7 +435,7 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
         downloaded = None
 
     # convert file_size and downloaded_size to KiB and MiB and GiB
-    if (downloaded is not None and file_size is not None and file_size != 0):
+    if downloaded is not None and file_size is not None and file_size != 0:
         file_size_back = file_size
 
         # converting file_size to KiB or MiB or GiB
@@ -437,8 +462,8 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
 
     # convert download_speed to desired units.
     # and find estimate_time_left
-    if (downloaded is not None and download_speed != 0):
-        estimate_time_left = int((file_size - downloaded)/download_speed)
+    if downloaded is not None and download_speed != 0:
+        estimate_time_left = int((file_size - downloaded) / download_speed)
 
         # converting file_size to KiB or MiB or GiB
         download_speed_str = humanReadableSize(download_speed, 'speed') + '/s'
@@ -447,13 +472,13 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
         ONE_HOUR = 3600
         ONE_MIN = 60
         if estimate_time_left >= ONE_HOUR:
-            eta = eta + str(int(estimate_time_left/3600)) + 'h'
+            eta = eta + str(int(estimate_time_left / 3600)) + 'h'
             estimate_time_left = estimate_time_left % 3600
-            eta = eta + str(int(estimate_time_left/60)) + 'm'
+            eta = eta + str(int(estimate_time_left / 60)) + 'm'
             estimate_time_left = estimate_time_left % 60
             eta = eta + str(estimate_time_left) + 's'
         elif estimate_time_left >= ONE_MIN:
-            eta = eta + str(int(estimate_time_left/60)) + 'm'
+            eta = eta + str(int(estimate_time_left / 60)) + 'm'
             estimate_time_left = estimate_time_left % 60
             eta = eta + str(estimate_time_left) + 's'
         else:
@@ -477,14 +502,14 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
         status_str = None
 
     # rename active status to downloading
-    if (status_str == 'active'):
+    if status_str == 'active':
         status_str = DownloadStatus.Downloading
 
     # rename removed status to stopped
-    if (status_str == 'removed'):
+    if status_str == 'removed':
         status_str = DownloadStatus.Stopped
 
-    if (status_str == 'None'):
+    if status_str == 'None':
         status_str = None
 
     # set 0 second for estimate_time_left_str if download is completed.
@@ -510,7 +535,6 @@ def convertDownloadInformation(download_status: dict[str, str]) -> dict[str, Any
 # this method is returning file_path of file in the user's download folder
 # and move downloaded file after download completion.
 def downloadCompleteAction(parent: QWidget, path: str, download_path: str, file_name: str, file_size: int) -> str:
-
     # remove query from name, If file_name contains query components.
     # check if query existed.
     # query form is 1.mp3?foo=bar 2.mp3?blatz=pow 3.mp3?fizz=buzz
@@ -531,22 +555,19 @@ def downloadCompleteAction(parent: QWidget, path: str, download_path: str, file_
         file_name_split = file_name.split('.')
         extension_length = len(file_name_split[-1]) + 1
 
-        new_name = file_name[0:-extension_length] + \
-            '_' + str(i) + file_name[-extension_length:]
+        new_name = file_name[0:-extension_length] + '_' + str(i) + file_name[-extension_length:]
         file_path = os.path.join(download_path, new_name)
         i = i + 1
 
     free_space = freeSpace(download_path)
 
     if free_space is not None and file_size is not None:
-
         # compare free disk space and file_size
         if free_space >= file_size:
-
             # move the file to the download folder
             move_answer = moveFile(str(path), str(file_path), 'file')
 
-            if not(move_answer):
+            if not (move_answer):
                 # write error message in log
                 ghermez.sendToLog('Persepolis can not move file', 'ERROR')
                 file_path = path
@@ -558,14 +579,13 @@ def downloadCompleteAction(parent: QWidget, path: str, download_path: str, file_
             ghermez.sendToLog('Insufficient disk space in download folder', 'ERROR')
 
             # show notification
-            notifySend('Insufficient disk space!', 'Please change download folder',
-                       10000, 'fail', parent=parent)
+            notifySend('Insufficient disk space!', 'Please change download folder', 10000, 'fail', parent=parent)
 
     else:
         # move the file to the download folder
         move_answer = moveFile(str(path), str(file_path), 'file')
 
-        if not(move_answer):
+        if not (move_answer):
             ghermez.sendToLog('Persepolis can not move file', 'ERROR')
             file_path = path
 
@@ -574,7 +594,6 @@ def downloadCompleteAction(parent: QWidget, path: str, download_path: str, file_
 
 # this function returns folder of download according to file extension
 def findDownloadPath(file_name: str, download_path: str, subfolder: str) -> str:
-
     file_name_split = file_name.split('.')
     file_extension = file_name_split[-1]
 
@@ -588,26 +607,204 @@ def findDownloadPath(file_name: str, download_path: str, subfolder: str) -> str:
         file_extension = file_extension.split('?')[0]
 
     # audio formats
-    audio = ['act', 'aiff', 'aac', 'amr', 'ape', 'au', 'awb', 'dct', 'dss', 'dvf',
-             'flac', 'gsm', 'iklax', 'ivs', 'm4a', 'm4p', 'mmf', 'mp3', 'mpc', 'msv',
-             'ogg', 'oga', 'opus', 'ra', 'raw', 'sln', 'tta', 'vox', 'wav', 'wma', 'wv']
+    audio = [
+        'act',
+        'aiff',
+        'aac',
+        'amr',
+        'ape',
+        'au',
+        'awb',
+        'dct',
+        'dss',
+        'dvf',
+        'flac',
+        'gsm',
+        'iklax',
+        'ivs',
+        'm4a',
+        'm4p',
+        'mmf',
+        'mp3',
+        'mpc',
+        'msv',
+        'ogg',
+        'oga',
+        'opus',
+        'ra',
+        'raw',
+        'sln',
+        'tta',
+        'vox',
+        'wav',
+        'wma',
+        'wv',
+    ]
 
     # video formats
-    video = ['3g2', '3gp', 'asf', 'avi', 'drc', 'flv', 'm4v', 'mkv', 'mng', 'mov', 'qt', 'mp4', 'm4p', 'mpg', 'mp2',
-             'mpeg', 'mpe', 'mpv', 'm2v', 'mxf', 'nsv', 'ogv', 'rmvb', 'roq', 'svi', 'vob', 'webm', 'wmv', 'yuv', 'rm']
+    video = [
+        '3g2',
+        '3gp',
+        'asf',
+        'avi',
+        'drc',
+        'flv',
+        'm4v',
+        'mkv',
+        'mng',
+        'mov',
+        'qt',
+        'mp4',
+        'm4p',
+        'mpg',
+        'mp2',
+        'mpeg',
+        'mpe',
+        'mpv',
+        'm2v',
+        'mxf',
+        'nsv',
+        'ogv',
+        'rmvb',
+        'roq',
+        'svi',
+        'vob',
+        'webm',
+        'wmv',
+        'yuv',
+        'rm',
+    ]
 
     # document formats
-    document = ['doc', 'docx', 'html', 'htm', 'fb2', 'odt', 'sxw', 'pdf', 'ps', 'rtf', 'tex', 'txt', 'epub', 'pub'
-                'mobi', 'azw', 'azw3', 'azw4', 'kf8', 'chm', 'cbt', 'cbr', 'cbz', 'cb7', 'cba', 'ibooks', 'djvu', 'md']
+    document = [
+        'doc',
+        'docx',
+        'html',
+        'htm',
+        'fb2',
+        'odt',
+        'sxw',
+        'pdf',
+        'ps',
+        'rtf',
+        'tex',
+        'txt',
+        'epub',
+        'pubmobi',
+        'azw',
+        'azw3',
+        'azw4',
+        'kf8',
+        'chm',
+        'cbt',
+        'cbr',
+        'cbz',
+        'cb7',
+        'cba',
+        'ibooks',
+        'djvu',
+        'md',
+    ]
 
     # compressed formats
-    compressed = ['a', 'ar', 'cpio', 'shar', 'LBR', 'iso', 'lbr', 'mar', 'tar', 'bz2', 'F', 'gz', 'lz', 'lzma', 'lzo',
-                  'rz', 'sfark', 'sz', 'xz', 'Z', 'z', 'infl', '7z', 's7z', 'ace', 'afa', 'alz', 'apk', 'arc', 'arj',
-                  'b1', 'ba', 'bh', 'cab', 'cfs', 'cpt', 'dar', 'dd', 'dgc', 'dmg', 'ear', 'gca', 'ha', 'hki', 'ice',
-                  'jar', 'kgb', 'lzh', 'lha', 'lzx', 'pac', 'partimg', 'paq6', 'paq7', 'paq8', 'pea', 'pim', 'pit',
-                  'qda', 'rar', 'rk', 'sda', 'sea', 'sen', 'sfx', 'sit', 'sitx', 'sqx', 'tar.gz', 'tgz', 'tar.Z',
-                  'tar.bz2', 'tbz2', 'tar.lzma', 'tlz', 'uc', 'uc0', 'uc2', 'ucn', 'ur2', 'ue2', 'uca', 'uha', 'war',
-                  'wim', 'xar', 'xp3', 'yz1', 'zip', 'zipx', 'zoo', 'zpaq', 'zz', 'ecc', 'par', 'par2']
+    compressed = [
+        'a',
+        'ar',
+        'cpio',
+        'shar',
+        'LBR',
+        'iso',
+        'lbr',
+        'mar',
+        'tar',
+        'bz2',
+        'F',
+        'gz',
+        'lz',
+        'lzma',
+        'lzo',
+        'rz',
+        'sfark',
+        'sz',
+        'xz',
+        'Z',
+        'z',
+        'infl',
+        '7z',
+        's7z',
+        'ace',
+        'afa',
+        'alz',
+        'apk',
+        'arc',
+        'arj',
+        'b1',
+        'ba',
+        'bh',
+        'cab',
+        'cfs',
+        'cpt',
+        'dar',
+        'dd',
+        'dgc',
+        'dmg',
+        'ear',
+        'gca',
+        'ha',
+        'hki',
+        'ice',
+        'jar',
+        'kgb',
+        'lzh',
+        'lha',
+        'lzx',
+        'pac',
+        'partimg',
+        'paq6',
+        'paq7',
+        'paq8',
+        'pea',
+        'pim',
+        'pit',
+        'qda',
+        'rar',
+        'rk',
+        'sda',
+        'sea',
+        'sen',
+        'sfx',
+        'sit',
+        'sitx',
+        'sqx',
+        'tar.gz',
+        'tgz',
+        'tar.Z',
+        'tar.bz2',
+        'tbz2',
+        'tar.lzma',
+        'tlz',
+        'uc',
+        'uc0',
+        'uc2',
+        'ucn',
+        'ur2',
+        'ue2',
+        'uca',
+        'uha',
+        'war',
+        'wim',
+        'xar',
+        'xp3',
+        'yz1',
+        'zip',
+        'zipx',
+        'zoo',
+        'zpaq',
+        'zz',
+        'ecc',
+        'par',
+        'par2',
+    ]
 
     if str(subfolder) == 'yes':
         if file_extension in audio:
@@ -638,6 +835,7 @@ def shutDown() -> bool:
     except Exception:
         ghermez.sendToLog('Aria2 Shutdown Error', 'ERROR')
         return False
+
 
 # downloadStop stops download completely
 # this function sends remove request to aria2
@@ -670,8 +868,7 @@ def downloadStop(gid: str, parent: QWidget) -> str:
 
     if status != DownloadStatus.Complete:
         # change start_time end_time and after_download value to None in date base
-        parent.persepolis_db.setDefaultGidInAddlinkTable(gid,
-                                                         start_time=True, end_time=True, after_download=True)
+        parent.persepolis_db.setDefaultGidInAddlinkTable(gid, start_time=True, end_time=True, after_download=True)
 
         # change status of download to "stopped" in data base
         download_dict = {'gid': gid, 'status': DownloadStatus.Stopped}
@@ -706,6 +903,7 @@ def downloadUnpause(gid: str) -> str | None:
 
     return answer
 
+
 #  limitSpeed limits download speed
 def limitSpeed(gid: str, limit: str) -> None:
     limit = str(limit)
@@ -717,7 +915,7 @@ def limitSpeed(gid: str, limit: str) -> None:
         if limit_unit == 'K':
             limit_number = round(limit_number)
         else:
-            limit_number = round(1024*limit_number)
+            limit_number = round(1024 * limit_number)
             limit_unit = 'K'
         limit = str(limit_number) + limit_unit
 
@@ -753,17 +951,20 @@ def activeDownloads() -> list[str]:
 def nowDate() -> str:
     return time.strftime('%Y/%m/%d , %H:%M:%S')
 
+
 # sigmaTime gets hours and minutes for input.
 # and converts hours to minutes and returns summation in minutes
 # input format is HH:MM
 def sigmaTime(time: str) -> int:
     hour, minute = time.split(':')
-    return (int(hour)*60 + int(minute))
+    return int(hour) * 60 + int(minute)
+
 
 # nowTime returns now time in HH:MM format!
 def nowTime() -> int:
     now_time = time.strftime('%H:%M')
     return sigmaTime(now_time)
+
 
 # this function creates sleep time,if user sets "start time" for download.
 def startTime(start_time: str, gid: str, parent: QWidget) -> DownloadStatus:
@@ -808,19 +1009,16 @@ def endTime(end_time: str, gid: str, parent: QWidget) -> None:
     answer = 'end'
     # while current time is not equal to end_time, continue the loop
     while sigma_end != sigma_now:
-
         # get download status from data_base
         download_dict = parent.persepolis_db.searchGidInDownloadTable(gid)
         status = download_dict['status']
 
         # check download status
         if status in ('scheduled', 'downloading', 'paused', 'waiting'):
-
             # download continues!
             answer = 'continue'
 
         else:
-
             # Download completed or stopped by user
             # so break the loop
             answer = 'end'
@@ -845,12 +1043,13 @@ def endTime(end_time: str, gid: str, parent: QWidget) -> None:
 
         # If aria2c not respond, so kill it. R.I.P :))
         if (answer == 'None') and (os_type != OS.WINDOWS):
-
-            subprocess.Popen(['killall', 'aria2c'],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False)
+            subprocess.Popen(
+                ['killall', 'aria2c'],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
         # change end_time value to None in data_base
         parent.persepolis_db.setDefaultGidInAddlinkTable(gid, end_time=True)

@@ -20,6 +20,7 @@ except ImportError:
     from PyQt5.QtCore import QCoreApplication, QSettings
     from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
 
+
 class VideoFinderProgressWindow_Ui(ProgressWindow_Ui):  # noqa: N801
     def __init__(self, persepolis_setting: QSettings) -> None:
         super().__init__(persepolis_setting)
@@ -47,12 +48,17 @@ class VideoFinderProgressWindow_Ui(ProgressWindow_Ui):  # noqa: N801
 
         # labels
 
-        self.video_status_label.setText(QCoreApplication.translate(
-            'video_finder_progress_ui_tr', '<b>Video file status: </b>'))
-        self.audio_status_label.setText(QCoreApplication.translate(
-            'video_finder_progress_ui_tr', '<b>Audio file status: </b>'))
-        self.muxing_status_label.setText(QCoreApplication.translate(
-            'video_finder_progress_ui_tr', '<b>Mixing status: </b>'))
+        self.video_status_label.setText(
+            QCoreApplication.translate('video_finder_progress_ui_tr', '<b>Video file status: </b>'),
+        )
+        self.audio_status_label.setText(
+            QCoreApplication.translate('video_finder_progress_ui_tr', '<b>Audio file status: </b>'),
+        )
+        self.muxing_status_label.setText(
+            QCoreApplication.translate('video_finder_progress_ui_tr', '<b>Mixing status: </b>'),
+        )
 
-        self.progress_tabWidget.setTabText(self.progress_tabWidget.indexOf(
-            self.status_tab),  QCoreApplication.translate('setting_ui_tr', 'Status'))
+        self.progress_tabWidget.setTabText(
+            self.progress_tabWidget.indexOf(self.status_tab),
+            QCoreApplication.translate('setting_ui_tr', 'Status'),
+        )

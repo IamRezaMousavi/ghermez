@@ -29,10 +29,8 @@ class AboutWindow(AboutWindow_Ui):
         self.persepolis_setting = persepolis_setting
 
         # setting window size and position
-        size = self.persepolis_setting.value(
-            'AboutWindow/size', QSize(545, 375))
-        position = self.persepolis_setting.value(
-            'AboutWindow/position', QPoint(300, 300))
+        size = self.persepolis_setting.value('AboutWindow/size', QSize(545, 375))
+        position = self.persepolis_setting.value('AboutWindow/position', QPoint(300, 300))
 
         # read translators.txt files.
         # this file contains all translators.
@@ -44,11 +42,8 @@ class AboutWindow(AboutWindow_Ui):
 
         self.translators_textEdit.insertPlainText(f_text)
 
-
-
         self.resize(size)
         self.move(position)
-
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key_Escape:

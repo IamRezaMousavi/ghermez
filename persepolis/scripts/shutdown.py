@@ -35,20 +35,19 @@ if TYPE_CHECKING:
 
 os_type = platform.system()
 
-def shutDown(parent: QWidget, gid: str | None=None, category: str | None=None, password: str | None=None) -> None:
+
+def shutDown(parent: QWidget, gid: str | None = None, category: str | None = None, password: str | None = None) -> None:
     # for queue >> gid = None
     # for single downloads >> category = None
     # change value of shutdown in data base
     if category is not None:
-        shutdown_dict = {'category': category,
-                'shutdown': 'wait'}
+        shutdown_dict = {'category': category, 'shutdown': 'wait'}
 
         # update data base
         parent.temp_db.updateQueueTable(shutdown_dict)
     else:
         # so we have single download
-        shutdown_dict = {'gid': gid,
-                'shutdown': 'wait'}
+        shutdown_dict = {'gid': gid, 'shutdown': 'wait'}
 
         # update data base
         parent.temp_db.updateSingleTable(shutdown_dict)
@@ -67,46 +66,49 @@ def shutDown(parent: QWidget, gid: str | None=None, category: str | None=None, p
         shutdown_status = shutdown_dict['shutdown']
 
     if shutdown_status == 'shutdown':
-
         ghermez.sendToLog('Shutting down in 20 seconds', 'INFO')
         sleep(20)
 
         if os_type == OS.LINUX:
-
-            pipe = subprocess.Popen(['sudo', '-S', 'poweroff'],
-                                    stdout=subprocess.DEVNULL,
-                                    stdin=subprocess.PIPE,
-                                    stderr=subprocess.DEVNULL,
-                                    shell=False)
+            pipe = subprocess.Popen(
+                ['sudo', '-S', 'poweroff'],
+                stdout=subprocess.DEVNULL,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                shell=False,
+            )
 
             pipe.communicate(password.encode())
 
         elif os_type == OS.DARWIN:
-
-            pipe = subprocess.Popen(['sudo', '-S', 'shutdown', '-h', 'now'],
-                                    stdout=subprocess.DEVNULL,
-                                    stdin=subprocess.PIPE,
-                                    stderr=subprocess.DEVNULL,
-                                    shell=False)
+            pipe = subprocess.Popen(
+                ['sudo', '-S', 'shutdown', '-h', 'now'],
+                stdout=subprocess.DEVNULL,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                shell=False,
+            )
 
             pipe.communicate(password.encode())
 
         elif os_type == OS.WINDOWS:
-
             CREATE_NO_WINDOW = 0x08000000
-            subprocess.Popen(['shutdown', '-S'],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False,
-                             creationflags=CREATE_NO_WINDOW)
+            subprocess.Popen(
+                ['shutdown', '-S'],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+                creationflags=CREATE_NO_WINDOW,
+            )
 
         elif os_type in OS.BSD_FAMILY:
-
-            pipe = subprocess.Popen(['sudo', '-S', 'shutdown', '-p', 'now'],
-                                    stdout=subprocess.DEVNULL,
-                                    stdin=subprocess.PIPE,
-                                    stderr=subprocess.DEVNULL,
-                                    shell=False)
+            pipe = subprocess.Popen(
+                ['sudo', '-S', 'shutdown', '-p', 'now'],
+                stdout=subprocess.DEVNULL,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                shell=False,
+            )
 
             pipe.communicate(password.encode())

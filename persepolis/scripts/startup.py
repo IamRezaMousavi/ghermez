@@ -26,11 +26,10 @@ os_type = platform.system()
 
 if os_type == OS.WINDOWS:
     import winreg
-    from builtins import WindowsError
 
 
 # check startup
-def checkstartup() -> (bool | None):
+def checkstartup() -> bool | None:
     # check if it is linux
     if os_type in OS.UNIX_LIKE:
         # check if the startup exists
@@ -50,9 +49,13 @@ def checkstartup() -> (bool | None):
         # try to open startup key and check persepolis value
         try:
             aKey = winreg.OpenKey(
-                winreg.HKEY_CURRENT_USER, 'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 0, winreg.KEY_ALL_ACCESS)
+                winreg.HKEY_CURRENT_USER,
+                'Software\\Microsoft\\Windows\\CurrentVersion\\Run',
+                0,
+                winreg.KEY_ALL_ACCESS,
+            )
             startup = True
-        except WindowsError:
+        except OSError:
             startup = False
 
         # Close the connection
@@ -66,12 +69,12 @@ def checkstartup() -> (bool | None):
         return None
     return None
 
+
 # add startup file
 def addstartup() -> None:
     # check if it is linux
     if os_type in OS.UNIX_LIKE:
-        entry = \
-            '''[Desktop Entry]
+        entry = '''[Desktop Entry]
 Name=Persepolis Download Manager
 Name[fa]=پرسپولیس
 Comment=Download Manager
@@ -98,14 +101,17 @@ StartupWMClass=persepolis-download-Manager
         # OS X
         cwd = sys.argv[0]
         cwd = os.path.dirname(cwd)
-        entry = '''<?xml version="1.0" encoding="UTF-8"?>
+        entry = (
+            '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>Label</key>
 	<string>com.persepolisdm.persepolis</string>
 	<key>Program</key>
-	<string>''' + cwd + '''/Persepolis Download Manager</string>
+	<string>'''
+            + cwd
+            + '''/Persepolis Download Manager</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>--tray</string>
@@ -114,31 +120,33 @@ StartupWMClass=persepolis-download-Manager
 	<true/>
 </dict>
 </plist>\n'''
+        )
         with open(home_address + '/Library/LaunchAgents/com.persepolisdm.plist', 'w+') as startupfile:
             startupfile.write(entry)
-        os.system('launchctl load ' + home_address +
-                  '/Library/LaunchAgents/com.persepolisdm.plist')
+        os.system('launchctl load ' + home_address + '/Library/LaunchAgents/com.persepolisdm.plist')
     # check if it is Windows
     elif os_type == OS.WINDOWS:
-
         # Connect to the startup path in Registry
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                             'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 0, winreg.KEY_ALL_ACCESS)
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            'Software\\Microsoft\\Windows\\CurrentVersion\\Run',
+            0,
+            winreg.KEY_ALL_ACCESS,
+        )
         # find current persepolis exe path
         cwd = os.getcwd()
         persepolisexetray = '"' + cwd + '\\Persepolis Download Manager.exe' + '"' + ' --tray'
         # add persepolis to startup
-        winreg.SetValueEx(key, 'persepolis', 0,
-                          winreg.REG_SZ, persepolisexetray)
+        winreg.SetValueEx(key, 'persepolis', 0, winreg.REG_SZ, persepolisexetray)
 
         # Close connection
         winreg.CloseKey(key)
+
 
 # remove startup file
 def removestartup() -> None:
     # check if it is linux
     if os_type in OS.BSD_FAMILY:
-
         # remove it
         os.remove(home_address + '/.config/autostart/persepolis.desktop')
 
@@ -146,16 +154,18 @@ def removestartup() -> None:
     elif os_type == OS.OSX:
         # OS X
         if checkstartup():
-            os.system('launchctl unload ' + home_address +
-                      '/Library/LaunchAgents/com.persepolisdm.plist')
-            os.remove(home_address +
-                      '/Library/LaunchAgents/com.persepolisdm.plist')
+            os.system('launchctl unload ' + home_address + '/Library/LaunchAgents/com.persepolisdm.plist')
+            os.remove(home_address + '/Library/LaunchAgents/com.persepolisdm.plist')
 
     # check if it is Windows
     elif os_type == OS.WINDOWS and checkstartup():
         # Connect to the startup path in Registry
         key = winreg.OpenKey(
-            winreg.HKEY_CURRENT_USER, 'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 0, winreg.KEY_ALL_ACCESS)
+            winreg.HKEY_CURRENT_USER,
+            'Software\\Microsoft\\Windows\\CurrentVersion\\Run',
+            0,
+            winreg.KEY_ALL_ACCESS,
+        )
 
         # remove persepolis from startup
         winreg.DeleteValue(key, 'persepolis')

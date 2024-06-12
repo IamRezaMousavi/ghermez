@@ -15,11 +15,13 @@ try:
     from PySide6.QtCore import QCoreApplication, QLocale, QSettings, QSize, Qt, QTranslator
     from PySide6.QtGui import QFont, QIcon
     from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QTabWidget, QTextEdit, QVBoxLayout, QWidget
+
     pyside6_is_installed = True
 except ImportError:
     from PyQt5.QtCore import QCoreApplication, QLocale, QSettings, QSize, Qt, QTranslator
     from PyQt5.QtGui import QFont, QIcon
     from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QTabWidget, QTextEdit, QVBoxLayout, QWidget
+
     pyside6_is_installed = False
 
 from persepolis.constants import APP_NAME, LONG_NAME, REPO_LINK, VERSION
@@ -28,12 +30,14 @@ from persepolis.gui import resources  # noqa: F401
 if pyside6_is_installed:
     try:
         from PySide6 import QtSvgWidget
+
         qtsvg_available = True
     except ImportError:
         qtsvg_available = False
 else:
     try:
         from PyQt5 import QtSvg as QtSvgWidget
+
         qtsvg_available = True
     except ImportError:
         qtsvg_available = False
@@ -62,8 +66,7 @@ class AboutWindow_Ui(QWidget):  # noqa: N801
         elif ui_direction in 'ltr':
             self.setLayoutDirection(Qt.LeftToRight)
 
-        icons = ':/' + \
-            str(self.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.persepolis_setting.value('settings/icons')) + '/'
 
         self.setMinimumSize(QSize(545, 375))
         self.setWindowIcon(QIcon.fromTheme(APP_NAME, QIcon(':/ghermez.png')))
@@ -107,8 +110,7 @@ class AboutWindow_Ui(QWidget):  # noqa: N801
         self.site2_label.setTextFormat(Qt.RichText)
         self.site2_label.setAlignment(Qt.AlignCenter)
         self.site2_label.setOpenExternalLinks(True)
-        self.site2_label.setTextInteractionFlags(
-            Qt.TextBrowserInteraction)
+        self.site2_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         about_tab_verticalLayout.addWidget(self.site2_label)
 
         about_tab_verticalLayout.addStretch(1)
@@ -143,8 +145,7 @@ class AboutWindow_Ui(QWidget):  # noqa: N801
         self.contributors_link_label.setTextFormat(Qt.RichText)
         self.contributors_link_label.setAlignment(Qt.AlignCenter)
         self.contributors_link_label.setOpenExternalLinks(True)
-        self.contributors_link_label.setTextInteractionFlags(
-            Qt.TextBrowserInteraction)
+        self.contributors_link_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         developers_verticalLayout.addWidget(self.contributors_link_label)
 
         developers_verticalLayout.addStretch(1)
@@ -187,23 +188,26 @@ class AboutWindow_Ui(QWidget):  # noqa: N801
         self.title_label.setText(QCoreApplication.translate('about_ui_tr', LONG_NAME))
         self.version_label.setText(QCoreApplication.translate('about_ui_tr', f'Version {VERSION}'))
         self.site2_label.setText(
-            QCoreApplication.translate('about_ui_tr',
-                                       f'<a href={REPO_LINK}>{REPO_LINK}</a>',
-                                       "TRANSLATORS NOTE: YOU REALLY DON'T NEED TO TRANSLATE THIS PART!"),
+            QCoreApplication.translate(
+                'about_ui_tr',
+                f'<a href={REPO_LINK}>{REPO_LINK}</a>',
+                "TRANSLATORS NOTE: YOU REALLY DON'T NEED TO TRANSLATE THIS PART!",
+            ),
         )
 
         # developers_tab
         self.developers_title_label.setText(QCoreApplication.translate('about_ui_tr', 'Developers:'))
 
         self.name_label.setText(
-            QCoreApplication.translate('about_ui_tr',
-                                       'Reza Mousavi\nAliReza AmirSamimi\nMohammadreza Abdollahzadeh\nSadegh Alirezaie\nMostafa Asadi\nMohammadAmin Vahedinia\nJafar Akhondali\nH.Rostami\nEhsan Titish',  # noqa: E501
-                                       "TRANSLATORS NOTE: YOU REALLY DON'T NEED TO TRANSLATE THIS PART!"),
+            QCoreApplication.translate(
+                'about_ui_tr',
+                'Reza Mousavi\nAliReza AmirSamimi\nMohammadreza Abdollahzadeh\nSadegh Alirezaie\nMostafa Asadi\nMohammadAmin Vahedinia\nJafar Akhondali\nH.Rostami\nEhsan Titish',  # noqa: E501
+                "TRANSLATORS NOTE: YOU REALLY DON'T NEED TO TRANSLATE THIS PART!",
+            ),
         )
 
         self.contributors_thank_label.setText(QCoreApplication.translate('about_ui_tr', 'Special thanks to:'))
-        self.contributors_link_label.setText(
-            f'<a href={REPO_LINK}/graphs/contributors>our contributors</a>')
+        self.contributors_link_label.setText(f'<a href={REPO_LINK}/graphs/contributors>our contributors</a>')
 
         # License
         self.license_text.setPlainText('''
@@ -222,7 +226,10 @@ class AboutWindow_Ui(QWidget):  # noqa: N801
             ''')
 
         # tabs
-        self.about_tabWidget.addTab(self.about_tab, QCoreApplication.translate('about_ui_tr', f'About {APP_NAME.capitalize()}'))  # noqa: E501
+        self.about_tabWidget.addTab(
+            self.about_tab,
+            QCoreApplication.translate('about_ui_tr', f'About {APP_NAME.capitalize()}'),
+        )
         self.about_tabWidget.addTab(self.developers_tab, QCoreApplication.translate('about_ui_tr', 'Developers'))
         self.about_tabWidget.addTab(self.translators_tab, QCoreApplication.translate('about_ui_tr', 'Translators'))
         self.about_tabWidget.addTab(self.license_tab, QCoreApplication.translate('about_ui_tr', 'License'))

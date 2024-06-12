@@ -1,4 +1,3 @@
-
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -72,17 +71,16 @@ default_setting_dict = returnDefaultSettings()
 # this loop is checking values in persepolis_setting . if value is not
 # valid then value replaced by default_setting_dict value
 for key in default_setting_dict:
-
     setting_value = persepolis_setting.value(key, default_setting_dict[key])
     persepolis_setting.setValue(key, setting_value)
 
 # download files is downloading in temporary folder(download_path_temp)
 # and then they will be moved to user download folder(download_path) after completion.
 # Check that mount point is available of not!
-if not(os.path.exists(persepolis_setting.value('download_path_temp'))):
+if not (os.path.exists(persepolis_setting.value('download_path_temp'))):
     persepolis_setting.setValue('download_path_temp', default_setting_dict['download_path_temp'])
 
-if not(os.path.exists(persepolis_setting.value('download_path'))):
+if not (os.path.exists(persepolis_setting.value('download_path'))):
     persepolis_setting.setValue('download_path', default_setting_dict['download_path'])
 
 
@@ -145,10 +143,10 @@ else:
 persepolis_version = float(persepolis_setting.value('version/version', 2.5))
 if persepolis_version < 2.6:  # noqa: PLR2004
     from persepolis.scripts.compatibility import compatibility
+
     try:
         compatibility()
     except Exception as e:
-
         # create an object for DataBase
         persepolis_db = ghermez.DataBase()
 
@@ -180,7 +178,6 @@ if persepolis_version < 3.2:  # noqa: PLR2004
     persepolis_setting.beginGroup('settings')
 
     for key in default_setting_dict:
-
         setting_value = default_setting_dict[key]
         persepolis_setting.setValue(key, setting_value)
 

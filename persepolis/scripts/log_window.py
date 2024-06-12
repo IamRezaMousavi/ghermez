@@ -38,7 +38,7 @@ class LogWindow(LogWindow_Ui):
 
         self.copy_log_pushButton.setEnabled(False)
 
-# log file address
+        # log file address
         self.log_file = os.path.join(str(config_folder), 'persepolisdm.log')
 
         with open(self.log_file) as f:
@@ -50,29 +50,21 @@ class LogWindow(LogWindow_Ui):
 
         self.text_edit.insertPlainText(self.text)
 
-        self.text_edit.copyAvailable.connect(
-            self.copyAvailableSignalHandler)
+        self.text_edit.copyAvailable.connect(self.copyAvailableSignalHandler)
 
-        self.copy_log_pushButton.clicked.connect(
-            self.copyPushButtonPressed)
+        self.copy_log_pushButton.clicked.connect(self.copyPushButtonPressed)
 
-        self.report_pushButton.clicked.connect(
-            self.reportPushButtonPressed)
+        self.report_pushButton.clicked.connect(self.reportPushButtonPressed)
 
-        self.close_pushButton.clicked.connect(
-            self.closePushButtonPressed)
+        self.close_pushButton.clicked.connect(self.closePushButtonPressed)
 
-        self.refresh_log_pushButton.clicked.connect(
-            self.refreshLogPushButtonPressed)
+        self.refresh_log_pushButton.clicked.connect(self.refreshLogPushButtonPressed)
 
-        self.clear_log_pushButton.clicked.connect(
-            self.clearLogPushButtonPressed)
+        self.clear_log_pushButton.clicked.connect(self.clearLogPushButtonPressed)
 
-# setting window size and position
-        size = self.persepolis_setting.value(
-            'LogWindow/size', QSize(720, 300))
-        position = self.persepolis_setting.value(
-            'LogWindow/position', QPoint(300, 300))
+        # setting window size and position
+        size = self.persepolis_setting.value('LogWindow/size', QSize(720, 300))
+        position = self.persepolis_setting.value('LogWindow/position', QPoint(300, 300))
         self.resize(size)
         self.move(position)
 
@@ -102,7 +94,7 @@ class LogWindow(LogWindow_Ui):
     def copyPushButtonPressed(self, _button: QPushButton) -> None:
         self.text_edit.copy()
 
-# this method is refresh log messages in text_edit
+    # this method is refresh log messages in text_edit
     def refreshLogPushButtonPressed(self, _button: QPushButton) -> None:
         with open(self.log_file) as f:
             f_lines = f.readlines()
@@ -118,7 +110,6 @@ class LogWindow(LogWindow_Ui):
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key_Escape:
             self.close()
-
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.layout().setSizeConstraint(QLayout.SetDefaultConstraint)

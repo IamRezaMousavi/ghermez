@@ -4,7 +4,7 @@ use tokio_tungstenite::tungstenite::Error as WsError;
 #[derive(Debug, Snafu)]
 #[snafu(visibility(pub(crate)))]
 pub enum Error {
-    #[snafu(display("aria2 responsed error: {source}"))]
+    #[snafu(display("aria2: responsed error: {source}"))]
     Aria2 { source: crate::Aria2Error },
     #[snafu(display("aria2: cannot parse value {value:?} as {to}"))]
     Parse { value: String, to: String },

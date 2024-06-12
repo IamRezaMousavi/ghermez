@@ -63,7 +63,7 @@ pub struct InnerClient {
 pub struct Client {
     inner: Arc<InnerClient>,
     // The sender can be cloned like `Arc`.
-    tx_callback: mpsc::Sender<TaskCallbacks>,
+    tx_callback: mpsc::UnboundedSender<TaskCallbacks>,
 }
 
 impl Drop for InnerClient {
@@ -312,17 +312,16 @@ impl Client {
 
         let weak = Arc::downgrade(&inner);
         let rx_notification = inner.subscribe_notifications();
-        let (tx_callback, rx_callback) = mpsc::channel(4);
+        let (tx_callback, rx_callback) = mpsc::unbounded_channel();
         // hold a weak reference to `inner` to prevent not shutting down when `Client` is dropped
         spawn(callback_worker(weak, rx_notification, rx_callback));
 
         Ok(Self { inner, tx_callback })
     }
 
-    pub(crate) async fn add_callbacks(&self, gid: String, callbacks: Callbacks) {
+    pub(crate) fn add_callbacks(&self, gid: String, callbacks: Callbacks) {
         self.tx_callback
             .send(TaskCallbacks { gid, callbacks })
-            .await
             .expect("tx_callback: receiver has been dropped");
     }
 }

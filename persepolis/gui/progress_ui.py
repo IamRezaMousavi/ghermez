@@ -70,7 +70,6 @@ class ProgressWindow_Ui(QWidget):  # noqa: N801
         elif ui_direction in 'ltr':
             self.setLayoutDirection(Qt.LeftToRight)
 
-
         # window
         self.setMinimumSize(QSize(595, 284))
 
@@ -119,7 +118,6 @@ class ProgressWindow_Ui(QWidget):  # noqa: N801
         self.options_tab = QWidget()
         options_tab_verticalLayout = QVBoxLayout(self.options_tab)
         options_tab_horizontalLayout = QHBoxLayout()
-
 
         # limit_checkBox
         self.limit_checkBox = QCheckBox(self.options_tab)
@@ -175,7 +173,6 @@ class ProgressWindow_Ui(QWidget):  # noqa: N801
 
         after_frame_verticalLayout = QVBoxLayout(self.after_frame)
 
-
         # after_comboBox
         self.after_comboBox = QComboBox(self.options_tab)
         self.after_comboBox.addItem('')
@@ -194,7 +191,6 @@ class ProgressWindow_Ui(QWidget):  # noqa: N801
         self.progress_tabWidget.addTab(self.options_tab, '')
 
         verticalLayout.addWidget(self.progress_tabWidget)
-
 
         # download_progressBar
         self.download_progressBar = QProgressBar(self)
@@ -230,15 +226,17 @@ class ProgressWindow_Ui(QWidget):  # noqa: N801
         self.rate_label.setText(QCoreApplication.translate('progress_ui_tr', 'Transfer rate: '))
         self.time_label.setText(QCoreApplication.translate('progress_ui_tr', 'Estimated time left:'))
         self.connections_label.setText(QCoreApplication.translate('progress_ui_tr', 'Number of connections: '))
-        self.progress_tabWidget.setTabText(self.progress_tabWidget.indexOf(
-            self.information_tab),  QCoreApplication.translate('progress_ui_tr', 'Download Information'))
+        self.progress_tabWidget.setTabText(
+            self.progress_tabWidget.indexOf(self.information_tab),
+            QCoreApplication.translate('progress_ui_tr', 'Download Information'),
+        )
         self.limit_checkBox.setText(QCoreApplication.translate('progress_ui_tr', 'Limit speed'))
         self.after_checkBox.setText(QCoreApplication.translate('progress_ui_tr', 'After download'))
         self.limit_comboBox.setItemText(0, 'KiB/s')
         self.limit_comboBox.setItemText(1, 'MiB/s')
         self.limit_pushButton.setText(QCoreApplication.translate('progress_ui_tr', 'Apply'))
 
-        self.after_comboBox.setItemText(0,  QCoreApplication.translate('progress_ui_tr', 'Shut Down'))
+        self.after_comboBox.setItemText(0, QCoreApplication.translate('progress_ui_tr', 'Shut Down'))
 
         self.progress_tabWidget.setTabText(
             self.progress_tabWidget.indexOf(self.options_tab),

@@ -31,6 +31,7 @@ from persepolis.constants import OS
 
 try:
     from persepolis.scripts import logger
+
     logger_availability = True
 except ImportError:
     logger_availability = False
@@ -47,16 +48,14 @@ home_address = os.path.expanduser('~')
 # determine the config folder path based on the operating system
 def determineConfigFolder() -> str:
     if os_type in OS.UNIX_LIKE:
-        config_folder = os.path.join(
-            home_address, '.config/persepolis_download_manager')
+        config_folder = os.path.join(home_address, '.config/persepolis_download_manager')
     elif os_type == OS.OSX:
-        config_folder = os.path.join(
-            home_address, 'Library/Application Support/persepolis_download_manager')
+        config_folder = os.path.join(home_address, 'Library/Application Support/persepolis_download_manager')
     elif os_type == OS.WINDOWS:
-        config_folder = os.path.join(
-            home_address, 'AppData', 'Local', 'persepolis_download_manager')
+        config_folder = os.path.join(home_address, 'AppData', 'Local', 'persepolis_download_manager')
 
     return config_folder
+
 
 # this function returns operating system and desktop environment(for linux and bsd).
 
@@ -71,7 +70,7 @@ def osAndDesktopEnvironment() -> tuple[str, str | None]:
 
 
 # this function converts file_size to KiB or MiB or GiB
-def humanReadableSize(size: float, input_type: str='file_size') -> str:
+def humanReadableSize(size: float, input_type: str = 'file_size') -> str:
     labels = ['KiB', 'MiB', 'GiB', 'TiB']
     i = -1
     ONE_KILOBYTE = 1024
@@ -88,14 +87,13 @@ def humanReadableSize(size: float, input_type: str='file_size') -> str:
         return str(round(size, 2)) + ' ' + labels[i]
     return str(round(size, None)) + ' ' + labels[i]
 
+
 # this function converts human readable size to byte
 
 
 def convertToByte(file_size: str) -> int:
-
     # if unit is not in Byte
     if file_size[-2:] != ' B':
-
         unit = file_size[-3:]
 
         # persepolis uses float type for GiB and TiB
@@ -105,26 +103,26 @@ def convertToByte(file_size: str) -> int:
         size_value = int(float(file_size[:-3]))
 
     # covert them in byte
-    if not(unit):
+    if not (unit):
         in_byte_value = size_value
 
     elif unit == 'KiB':
-        in_byte_value = size_value*1024
+        in_byte_value = size_value * 1024
 
     elif unit == 'MiB':
-        in_byte_value = size_value*1024*1024
+        in_byte_value = size_value * 1024 * 1024
 
     elif unit == 'GiB':
-        in_byte_value = size_value*1024*1024*1024
+        in_byte_value = size_value * 1024 * 1024 * 1024
 
     elif unit == 'TiB':
-        in_byte_value = size_value*1024*1024*1024*1024
+        in_byte_value = size_value * 1024 * 1024 * 1024 * 1024
 
     return int(in_byte_value)
 
 
 # this function checks free space in hard disk.
-def freeSpace(directory: str) -> (int | None):
+def freeSpace(directory: str) -> int | None:
     try:
         import psutil
     except ImportError:
@@ -154,13 +152,8 @@ def returnDefaultSettings() -> dict[str, str]:
     return ghermez.returnDefaultSettings(available_styles)
 
 
-
 def muxer(parent: QWidget, video_finder_dictionary: dict[str, str]) -> dict[str, Any]:
-
-    result_dictionary = {'error': 'no_error',
-                         'ffmpeg_error_message': None,
-                         'final_path': None,
-                         'final_size': None}
+    result_dictionary = {'error': 'no_error', 'ffmpeg_error_message': None, 'final_path': None, 'final_size': None}
 
     # find file path
     video_file_dictionary = parent.persepolis_db.searchGidInAddLinkTable(video_finder_dictionary['video_gid'])
@@ -189,7 +182,6 @@ def muxer(parent: QWidget, video_finder_dictionary: dict[str, str]) -> dict[str,
             result_dictionary['error'] = 'not enough free space'
 
         else:
-
             # find final file's name
             final_file_name = urllib.parse.unquote(os.path.basename(video_file_path))
 
@@ -204,39 +196,51 @@ def muxer(parent: QWidget, video_finder_dictionary: dict[str, str]) -> dict[str,
 
                 final_file_name = final_file_name[0:-extension_length] + '.mkv'
 
-            if parent.persepolis_setting.value('settings/download_path') == final_path \
-                and parent.persepolis_setting.value('settings/subfolder') == 'yes':
-                    final_path = os.path.join(final_path, 'Videos')
+            if (
+                parent.persepolis_setting.value('settings/download_path') == final_path
+                and parent.persepolis_setting.value('settings/subfolder') == 'yes'
+            ):
+                final_path = os.path.join(final_path, 'Videos')
 
             # rename file if file already existed
             i = 1
             final_path_plus_name = os.path.join(final_path, final_file_name)
 
             while os.path.isfile(final_path_plus_name):
-
                 extension_length = len(file_name_split[-1]) + 1
 
-                new_name = final_file_name[0:-extension_length] + \
-                    '_' + str(i) + final_file_name[-extension_length:]
+                new_name = final_file_name[0:-extension_length] + '_' + str(i) + final_file_name[-extension_length:]
 
                 final_path_plus_name = os.path.join(final_path, new_name)
                 i = i + 1
 
             # start muxing
             if os_type in OS.UNIX_LIKE:
-                pipe = subprocess.Popen(['ffmpeg', '-i', video_file_path,
-                                         '-i', audio_file_path,
-                                         '-c', 'copy',
-                                         '-shortest',
-                                         '-map', '0:v:0',
-                                         '-map', '1:a:0',
-                                         '-loglevel', 'error',
-                                         '-strict', '-2',
-                                         final_path_plus_name],
-                                        stderr=subprocess.PIPE,
-                                        stdout=subprocess.PIPE,
-                                        stdin=subprocess.PIPE,
-                                        shell=False)
+                pipe = subprocess.Popen(
+                    [
+                        'ffmpeg',
+                        '-i',
+                        video_file_path,
+                        '-i',
+                        audio_file_path,
+                        '-c',
+                        'copy',
+                        '-shortest',
+                        '-map',
+                        '0:v:0',
+                        '-map',
+                        '1:a:0',
+                        '-loglevel',
+                        'error',
+                        '-strict',
+                        '-2',
+                        final_path_plus_name,
+                    ],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
             elif os_type == OS.DARWIN:
                 # ffmpeg path in mac
@@ -245,19 +249,31 @@ def muxer(parent: QWidget, video_finder_dictionary: dict[str, str]) -> dict[str,
                 current_directory = os.path.dirname(cwd)
                 ffmpeg_path = os.path.join(current_directory, 'ffmpeg')
 
-                pipe = subprocess.Popen([ffmpeg_path, '-i', video_file_path,
-                                         '-i', audio_file_path,
-                                         '-c', 'copy',
-                                         '-shortest',
-                                         '-map', '0:v:0',
-                                         '-map', '1:a:0',
-                                         '-loglevel', 'error',
-                                         '-strict', '-2',
-                                         final_path_plus_name],
-                                        stderr=subprocess.PIPE,
-                                        stdout=subprocess.PIPE,
-                                        stdin=subprocess.PIPE,
-                                        shell=False)
+                pipe = subprocess.Popen(
+                    [
+                        ffmpeg_path,
+                        '-i',
+                        video_file_path,
+                        '-i',
+                        audio_file_path,
+                        '-c',
+                        'copy',
+                        '-shortest',
+                        '-map',
+                        '0:v:0',
+                        '-map',
+                        '1:a:0',
+                        '-loglevel',
+                        'error',
+                        '-strict',
+                        '-2',
+                        final_path_plus_name,
+                    ],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
             elif os_type == OS.WINDOWS:
                 # ffmpeg path in windows
@@ -268,20 +284,32 @@ def muxer(parent: QWidget, video_finder_dictionary: dict[str, str]) -> dict[str,
                 # NO_WINDOW option avoids opening additional CMD window in MS Windows.
                 NO_WINDOW = 0x08000000
 
-                pipe = subprocess.Popen([ffmpeg_path, '-i', video_file_path,
-                                         '-i', audio_file_path,
-                                         '-c', 'copy',
-                                         '-shortest',
-                                         '-map', '0:v:0',
-                                         '-map', '1:a:0',
-                                         '-loglevel', 'error',
-                                         '-strict', '-2',
-                                         final_path_plus_name],
-                                        stdout=subprocess.PIPE,
-                                        stdin=subprocess.PIPE,
-                                        stderr=subprocess.PIPE,
-                                        shell=False,
-                                        creationflags=NO_WINDOW)
+                pipe = subprocess.Popen(
+                    [
+                        ffmpeg_path,
+                        '-i',
+                        video_file_path,
+                        '-i',
+                        audio_file_path,
+                        '-c',
+                        'copy',
+                        '-shortest',
+                        '-map',
+                        '0:v:0',
+                        '-map',
+                        '1:a:0',
+                        '-loglevel',
+                        'error',
+                        '-strict',
+                        '-2',
+                        final_path_plus_name,
+                    ],
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    shell=False,
+                    creationflags=NO_WINDOW,
+                )
 
             if pipe.wait() == 0:
                 # muxing was finished successfully.

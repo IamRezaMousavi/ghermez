@@ -1148,7 +1148,7 @@ impl DataBase {
         let transaction = connection.transaction().unwrap();
 
         for dict in list {
-            if dict.get("video_gid").is_some() {
+            if dict.contains_key("video_gid") {
                 // update data base if value for the keys is not None
                 transaction
                     .execute(
@@ -1171,7 +1171,7 @@ impl DataBase {
                         ],
                     )
                     .unwrap();
-            } else if dict.get("audio_gid").is_some() {
+            } else if dict.contains_key("audio_gid") {
                 // update data base if value for the keys is not None
                 transaction
                     .execute(

@@ -1,4 +1,9 @@
-use std::{collections::HashMap, fmt, sync::Weak, time::Duration};
+use std::{
+    collections::{hash_map::Entry, HashMap},
+    fmt,
+    sync::Weak,
+    time::Duration,
+};
 
 use futures::future::BoxFuture;
 use log::{debug, info};
@@ -17,6 +22,12 @@ type Callback = Option<BoxFuture<'static, ()>>;
 /// Callbacks that will be executed on notifications.
 ///
 /// If the connection lost, all callbacks will be checked whether they need to be executed once reconnected.
+///
+/// It executes at most once for each task. That means a task can either be completed or failed.
+///
+/// If you need to customize the behavior, you can use `Client::subscribe_notifications`
+/// to receive notifications and handle them yourself,
+/// or use `tell_status` to check the status of the task.
 #[derive(Default)]
 pub struct Callbacks {
     /// Will trigger on `Event::Complete` or `Event::BtComplete`.
@@ -92,27 +103,22 @@ async fn on_reconnect(
     Ok(())
 }
 
-async fn on_aria2_notification(
-    gid: String,
-    event: Event,
-    callbacks_map: &mut HashMap<String, Callbacks>,
-) {
-    if let Some(callbacks) = callbacks_map.get_mut(&gid) {
-        match event {
-            Event::Complete | Event::BtComplete => {
-                if let Some(callback) = callbacks.on_download_complete.take() {
-                    // Spawn a new task to avoid blocking the notification receiver.
-                    spawn(callback);
-                }
+fn invoke_callbacks_on_event(event: Event, callbacks: &mut Callbacks) -> bool {
+    match event {
+        Event::Complete | Event::BtComplete => {
+            if let Some(callback) = callbacks.on_download_complete.take() {
+                // Spawn a new task to avoid blocking the notification receiver.
+                spawn(callback);
             }
-            Event::Error => {
-                if let Some(callback) = callbacks.on_error.take() {
-                    spawn(callback);
-                }
-            }
-            _ => {}
         }
+        Event::Error => {
+            if let Some(callback) = callbacks.on_error.take() {
+                spawn(callback);
+            }
+        }
+        _ => return false,
     }
+    true
 }
 
 #[derive(Debug)]
@@ -124,12 +130,13 @@ pub(crate) struct TaskCallbacks {
 pub(crate) async fn callback_worker(
     weak: Weak<InnerClient>,
     mut rx_notification: broadcast::Receiver<Notification>,
-    mut rx_callback: mpsc::Receiver<TaskCallbacks>,
+    mut rx_callback: mpsc::UnboundedReceiver<TaskCallbacks>,
 ) {
     use broadcast::error::RecvError;
 
     let mut is_first_notification = true;
     let mut callbacks_map = HashMap::new();
+    let mut yet_processed_notifications: HashMap<String, Vec<Event>> = HashMap::new();
 
     loop {
         select! {
@@ -150,7 +157,21 @@ pub(crate) async fn callback_worker(
                                 }
                             },
                             Notification::Aria2 { gid, event } => {
-                                on_aria2_notification(gid, event, &mut callbacks_map).await;
+                                match callbacks_map.entry(gid.clone()) {
+                                    Entry::Occupied(mut e) => {
+                                        let invoked = invoke_callbacks_on_event(event, e.get_mut());
+                                        if invoked {
+                                            e.remove();
+                                        }
+                                    }
+                                    _ => {
+                                        // If the task is not in the map, we need to store it for possible later processing.
+                                        yet_processed_notifications
+                                            .entry(gid.clone())
+                                            .or_insert_with(Vec::new)
+                                            .push(event);
+                                    }
+                                }
                             },
                             _ => {}
                         }
@@ -165,8 +186,21 @@ pub(crate) async fn callback_worker(
             },
             r = rx_callback.recv() => {
                 match r {
-                    Some(TaskCallbacks { gid, callbacks }) => {
-                        callbacks_map.insert(gid, callbacks);
+                    Some(TaskCallbacks { gid, mut callbacks }) => {
+                        if let Some(events) = yet_processed_notifications.remove(&gid) {
+                            let mut invoked = false;
+                            for event in events {
+                                invoked = invoke_callbacks_on_event(event, &mut callbacks);
+                                if invoked {
+                                    break;
+                                }
+                            }
+                            if !invoked {
+                                callbacks_map.insert(gid, callbacks);
+                            }
+                        } else {
+                            callbacks_map.insert(gid, callbacks);
+                        }
                     }
                     None => {
                         return;

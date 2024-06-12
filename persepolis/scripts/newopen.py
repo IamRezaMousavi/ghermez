@@ -22,8 +22,9 @@ def writeList(file_path: str, dir_list: str) -> None:
     with open(file_path, 'w') as f:
         f.writelines(str(dictionary))
 
+
 # This function is reading file_path and return content of file in list format
-def readList(file_path: str, mode: str='dictionary') -> list[str]:
+def readList(file_path: str, mode: str = 'dictionary') -> list[str]:
     with open(file_path) as f:
         f_string = f.readline()
     dictionary = ast.literal_eval(f_string.strip())
@@ -33,6 +34,7 @@ def readList(file_path: str, mode: str='dictionary') -> list[str]:
         dir_list[9] = str(dir_list[9])
 
     return dir_list
+
 
 # this function is reading a file that contains dictionary , and extracts
 # dictionary from it.

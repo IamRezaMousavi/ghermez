@@ -44,7 +44,9 @@ class ErrorWindow(QWidget):
         verticalLayout.addWidget(self.text_edit)
 
         self.label2 = QLabel(self)
-        self.label2.setText('Reseting persepolis may solving problem.\nDo not panic!If you add your download links again,\npersepolis will resume your downloads\nPlease copy this error message and press "Report Issue" button\nand open a new issue in Github for it.\nWe answer you as soon as possible. \nreporting this issue help us to improve persepolis.\nThank you!')  # noqa: E501
+        self.label2.setText(
+            'Reseting persepolis may solving problem.\nDo not panic!If you add your download links again,\npersepolis will resume your downloads\nPlease copy this error message and press "Report Issue" button\nand open a new issue in Github for it.\nWe answer you as soon as possible. \nreporting this issue help us to improve persepolis.\nThank you!', # noqa: E501
+        )
         verticalLayout.addWidget(self.label2)
 
         self.report_pushButton = QPushButton(self)
@@ -52,8 +54,7 @@ class ErrorWindow(QWidget):
         horizontalLayout.addWidget(self.report_pushButton)
 
         self.reset_persepolis_pushButton = QPushButton(self)
-        self.reset_persepolis_pushButton.clicked.connect(
-            self.resetPushButtonPressed)
+        self.reset_persepolis_pushButton.clicked.connect(self.resetPushButtonPressed)
         self.reset_persepolis_pushButton.setText(f'Reset {APP_NAME.capitalize()}')
         horizontalLayout.addWidget(self.reset_persepolis_pushButton)
 
@@ -73,7 +74,6 @@ class ErrorWindow(QWidget):
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key_Escape:
             self.close()
-
 
     def closePushButtonPressed(self, _button: QPushButton) -> None:
         self.close()

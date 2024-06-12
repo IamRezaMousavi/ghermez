@@ -18,6 +18,7 @@ except ImportError:
     from PyQt5.QtCore import Qt
     from PyQt5.QtGui import QColor, QPalette
 
+
 class DarkFusionPalette(QPalette):
     def __init__(self) -> None:
         super().__init__()
@@ -47,13 +48,11 @@ class DarkFusionPalette(QPalette):
 
         self.setColor(QPalette.Disabled, QPalette.Window, QColor(51, 51, 51))
 
-        self.setColor(QPalette.Disabled, QPalette.ButtonText,
-                      QColor(111, 111, 111))
+        self.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(111, 111, 111))
 
         self.setColor(QPalette.Disabled, QPalette.Text, QColor(122, 118, 113))
 
-        self.setColor(QPalette.Disabled, QPalette.WindowText,
-                      QColor(122, 118, 113))
+        self.setColor(QPalette.Disabled, QPalette.WindowText, QColor(122, 118, 113))
 
         self.setColor(QPalette.Disabled, QPalette.Base, QColor(32, 32, 32))
 
@@ -88,13 +87,10 @@ class LightFusionPalette(QPalette):
 
         self.setColor(QPalette.Disabled, QPalette.Window, QColor(227, 227, 227))
 
-        self.setColor(QPalette.Disabled, QPalette.ButtonText,
-                      QColor(111, 111, 111))
+        self.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(111, 111, 111))
 
         self.setColor(QPalette.Disabled, QPalette.Text, QColor(111, 111, 111))
 
-        self.setColor(QPalette.Disabled, QPalette.WindowText,
-                      QColor(111, 111, 111))
+        self.setColor(QPalette.Disabled, QPalette.WindowText, QColor(111, 111, 111))
 
         self.setColor(QPalette.Disabled, QPalette.Base, QColor(227, 227, 227))
-

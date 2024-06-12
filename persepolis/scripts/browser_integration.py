@@ -43,24 +43,19 @@ def browserIntegration(browser: str) -> (bool, bool):
             native_message_folder = home_address + '/.config/chromium/NativeMessagingHosts'
 
         elif browser == BROWSER.CHROME:
-            native_message_folder = home_address + \
-                '/.config/google-chrome/NativeMessagingHosts'
+            native_message_folder = home_address + '/.config/google-chrome/NativeMessagingHosts'
 
         elif browser == BROWSER.FIREFOX:
-            native_message_folder = home_address + \
-                '/.mozilla/native-messaging-hosts'
+            native_message_folder = home_address + '/.mozilla/native-messaging-hosts'
 
         elif browser == BROWSER.VIVALDI:
-            native_message_folder = home_address + \
-                '/.config/vivaldi/NativeMessagingHosts'
+            native_message_folder = home_address + '/.config/vivaldi/NativeMessagingHosts'
 
         elif browser == BROWSER.OPERA:
-            native_message_folder = home_address + \
-                '/.config/opera/NativeMessagingHosts'
+            native_message_folder = home_address + '/.config/opera/NativeMessagingHosts'
 
         elif browser == BROWSER.BRAVE:
-            native_message_folder = home_address + \
-                '/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts'
+            native_message_folder = home_address + '/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts'
 
     # for Mac OSX
     elif os_type == OS.OSX:
@@ -70,28 +65,24 @@ def browserIntegration(browser: str) -> (bool, bool):
 
         # Native Messaging Hosts folder path for every browser
         if browser == BROWSER.CHROMIUM:
-            native_message_folder = home_address + \
-                '/Library/Application Support/Chromium/NativeMessagingHosts'
+            native_message_folder = home_address + '/Library/Application Support/Chromium/NativeMessagingHosts'
 
         elif browser == BROWSER.CHROME:
-            native_message_folder = home_address + \
-                '/Library/Application Support/Google/Chrome/NativeMessagingHosts'
+            native_message_folder = home_address + '/Library/Application Support/Google/Chrome/NativeMessagingHosts'
 
         elif browser == BROWSER.FIREFOX:
-            native_message_folder = home_address + \
-                '/Library/Application Support/Mozilla/NativeMessagingHosts'
+            native_message_folder = home_address + '/Library/Application Support/Mozilla/NativeMessagingHosts'
 
         elif browser == BROWSER.VIVALDI:
-            native_message_folder = home_address + \
-                '/Library/Application Support/Vivaldi/NativeMessagingHosts'
+            native_message_folder = home_address + '/Library/Application Support/Vivaldi/NativeMessagingHosts'
 
         elif browser == BROWSER.OPERA:
-            native_message_folder = home_address + \
-                '/Library/Application Support/Opera/NativeMessagingHosts/'
+            native_message_folder = home_address + '/Library/Application Support/Opera/NativeMessagingHosts/'
 
         elif browser == BROWSER.BRAVE:
-            native_message_folder = home_address + \
-                '/Library/Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts/'
+            native_message_folder = (
+                home_address + '/Library/Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts/'
+            )
 
     # for MicroSoft Windows os (windows 7 , ...)
     elif os_type == OS.WINDOWS:
@@ -100,8 +91,7 @@ def browserIntegration(browser: str) -> (bool, bool):
 
         current_directory = os.path.dirname(cwd)
 
-        exec_path = os.path.join(
-            current_directory, 'Persepolis Download Manager.exe')
+        exec_path = os.path.join(current_directory, 'Persepolis Download Manager.exe')
 
         # the execution path in json file for Windows must in form of
         # c:\\Users\\...\\Persepolis Download Manager.exe , so we need 2
@@ -109,18 +99,16 @@ def browserIntegration(browser: str) -> (bool, bool):
         exec_path = exec_path.replace('\\', r'\\')
 
         if browser in BROWSER.CHROME_FAMILY:
-            native_message_folder = os.path.join(
-                home_address, 'AppData\\Local\\persepolis_download_manager', 'chrome')
+            native_message_folder = os.path.join(home_address, 'AppData\\Local\\persepolis_download_manager', 'chrome')
         else:
-            native_message_folder = os.path.join(
-                home_address, 'AppData\\Local\\persepolis_download_manager', 'firefox')
+            native_message_folder = os.path.join(home_address, 'AppData\\Local\\persepolis_download_manager', 'firefox')
 
     # WebExtension native hosts file prototype
     webextension_json_connector = {
         'name': 'com.persepolis.pdmchromewrapper',
         'type': 'stdio',
         'path': str(exec_path),
-        'description': 'Integrate Persepolis with %s using WebExtensions' % (browser),
+        'description': f'Integrate Persepolis with {browser} using WebExtensions',
     }
 
     # Add chrom* keys
@@ -135,40 +123,43 @@ def browserIntegration(browser: str) -> (bool, bool):
         ]
 
     # Build final path
-    native_message_file = os.path.join(
-        native_message_folder, 'com.persepolis.pdmchromewrapper.json')
+    native_message_file = os.path.join(native_message_folder, 'com.persepolis.pdmchromewrapper.json')
 
     ghermez.makeDirs(native_message_folder)
 
     # Write NMH file
     with open(native_message_file, 'w') as f:
-        f.write(str(webextension_json_connector).replace("'", '\"'))
+        f.write(str(webextension_json_connector).replace("'", '"'))
 
     if os_type != OS.WINDOWS:
-
-        pipe_json = subprocess.Popen(['chmod', '+x', str(native_message_file)],
-                                     stderr=subprocess.PIPE,
-                                     stdout=subprocess.PIPE,
-                                     stdin=subprocess.PIPE,
-                                     shell=False)
+        pipe_json = subprocess.Popen(
+            ['chmod', '+x', str(native_message_file)],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            shell=False,
+        )
 
         json_done = pipe_json.wait() == 0
 
     else:
         native_done = None
         import winreg
-        from builtins import WindowsError
+
         # add the key to the windows registry
         if browser in BROWSER.CHROME_FAMILY:
             try:
                 # create pdmchromewrapper key under NativeMessagingHosts
-                winreg.CreateKey(winreg.HKEY_CURRENT_USER,
-                                 'SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper')
+                winreg.CreateKey(
+                    winreg.HKEY_CURRENT_USER,
+                    'SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper',
+                )
                 # open a connection to pdmchromewrapper key
                 gintKey = winreg.OpenKey(
                     winreg.HKEY_CURRENT_USER,
                     'SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper',
-                    0, winreg.KEY_ALL_ACCESS,
+                    0,
+                    winreg.KEY_ALL_ACCESS,
                 )
                 # set native_message_file as key value
                 winreg.SetValueEx(gintKey, '', 0, winreg.REG_SZ, native_message_file)
@@ -177,20 +168,22 @@ def browserIntegration(browser: str) -> (bool, bool):
 
                 json_done = True
 
-            except WindowsError:
-
+            except OSError:
                 json_done = False
 
         elif browser == BROWSER.FIREFOX:
             try:
                 # create pdmchromewrapper key under NativeMessagingHosts for firefox
-                winreg.CreateKey(winreg.HKEY_CURRENT_USER,
-                                 'SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper')
+                winreg.CreateKey(
+                    winreg.HKEY_CURRENT_USER,
+                    'SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper',
+                )
                 # open a connection to pdmchromewrapper key for firefox
                 fintKey = winreg.OpenKey(
                     winreg.HKEY_CURRENT_USER,
                     'SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.persepolis.pdmchromewrapper',
-                    0, winreg.KEY_ALL_ACCESS,
+                    0,
+                    winreg.KEY_ALL_ACCESS,
                 )
                 # set native_message_file as key value
                 winreg.SetValueEx(fintKey, '', 0, winreg.REG_SZ, native_message_file)
@@ -199,8 +192,7 @@ def browserIntegration(browser: str) -> (bool, bool):
 
                 json_done = True
 
-            except WindowsError:
-
+            except OSError:
                 json_done = False
 
     # create persepolis_run_shell file for gnu/linux and BSD and Mac
@@ -222,8 +214,7 @@ def browserIntegration(browser: str) -> (bool, bool):
 
             current_directory = os.path.dirname(cwd)
 
-            persepolis_path = os.path.join(
-                current_directory, 'Persepolis Download Manager')
+            persepolis_path = os.path.join(current_directory, 'Persepolis Download Manager')
         else:
             persepolis_path = 'persepolis'
 
@@ -234,11 +225,13 @@ def browserIntegration(browser: str) -> (bool, bool):
 
         # make persepolis_run_shell executable
 
-        pipe_native = subprocess.Popen(['chmod', '+x', exec_path],
-                                       stderr=subprocess.PIPE,
-                                       stdout=subprocess.PIPE,
-                                       stdin=subprocess.PIPE,
-                                       shell=False)
+        pipe_native = subprocess.Popen(
+            ['chmod', '+x', exec_path],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            shell=False,
+        )
 
         native_done = pipe_native.wait() == 0
 

@@ -26,7 +26,6 @@ from ghermez import humanReadableSize
 
 # spider function finds name of file and file size from header
 def spider(add_link_dictionary: dict[str, str]) -> tuple[str, str | None]:
-
     # get user's download request from add_link_dictionary
     link = add_link_dictionary['link']
     ip = add_link_dictionary['ip']
@@ -88,7 +87,7 @@ def spider(add_link_dictionary: dict[str, str]) -> tuple[str, str | None]:
             # getting file name in desired format
             filename = filename_splited[1:-1]
 
-    if not(filename):
+    if not (filename):
         filename = link.split('/')[-1]
 
     # if user set file name before in add_link_dictionary['out'],
@@ -151,7 +150,7 @@ def queueSpider(add_link_dictionary: dict[str, str]) -> str:
             # getting file name in desired format
             filename = filename_splited[1:-1]
 
-    if not(filename):
+    if not (filename):
         filename = link.split('/')[-1]
 
     return filename

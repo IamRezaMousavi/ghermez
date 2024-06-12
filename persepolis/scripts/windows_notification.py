@@ -31,7 +31,7 @@ class TimerThread(QThread):
 
     def __init__(self, time: str) -> None:
         super().__init__()
-        self.time = float(int(time)/1000)
+        self.time = float(int(time) / 1000)
 
     def run(self) -> None:
         sleep(self.time)

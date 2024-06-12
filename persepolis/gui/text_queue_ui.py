@@ -61,8 +61,7 @@ class TextQueue_Ui(QWidget):  # noqa: N801
         super().__init__()
 
         self.persepolis_setting = persepolis_setting
-        icons = ':/' + \
-            str(self.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.persepolis_setting.value('settings/icons')) + '/'
 
         # add support for other languages
         locale = str(self.persepolis_setting.value('settings/locale'))
@@ -101,8 +100,7 @@ class TextQueue_Ui(QWidget):  # noqa: N801
         self.links_table.verticalHeader().hide()
 
         self.links_table.setColumnCount(3)
-        links_table_header_labels = [
-            'File Name', 'Download Link', 'dictionary']
+        links_table_header_labels = ['File Name', 'Download Link', 'dictionary']
         self.links_table.setHorizontalHeaderLabels(links_table_header_labels)
         self.links_table.setColumnHidden(2, True)
 
@@ -302,7 +300,9 @@ class TextQueue_Ui(QWidget):  # noqa: N801
         self.setWindowTitle(QCoreApplication.translate('text_ui_tr', LONG_NAME))
 
         self.queue_tabWidget.setTabText(
-            self.queue_tabWidget.indexOf(self.links_tab), QCoreApplication.translate('text_ui_tr', 'Links'))
+            self.queue_tabWidget.indexOf(self.links_tab),
+            QCoreApplication.translate('text_ui_tr', 'Links'),
+        )
         self.queue_tabWidget.setTabText(
             self.queue_tabWidget.indexOf(self.options_tab),
             QCoreApplication.translate('text_ui_tr', 'Download Options'),

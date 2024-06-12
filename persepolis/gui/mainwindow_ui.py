@@ -82,8 +82,7 @@ class MenuWidget(QPushButton):
 
         self.parent = parent
 
-        icons = ':/' + \
-            str(self.parent.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.parent.persepolis_setting.value('settings/icons')) + '/'
 
         # add support for other languages
         locale = str(self.parent.persepolis_setting.value('settings/locale'))
@@ -265,8 +264,7 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         elif ui_direction in 'ltr':
             self.setLayoutDirection(Qt.LeftToRight)
 
-        icons = ':/' + \
-            str(self.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.persepolis_setting.value('settings/icons')) + '/'
 
         self.setWindowTitle(QCoreApplication.translate('mainwindow_ui_tr', LONG_NAME))
         self.setWindowIcon(QIcon(':/ghermez.png'))
@@ -296,8 +294,7 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         self.category_tree.setModel(self.category_tree_model)
         category_table_header = [QCoreApplication.translate('mainwindow_ui_tr', 'Category')]
 
-        self.category_tree_model.setHorizontalHeaderLabels(
-            category_table_header)
+        self.category_tree_model.setHorizontalHeaderLabels(category_table_header)
         self.category_tree.header().setStretchLastSection(True)
 
         self.category_tree.header().setDefaultAlignment(Qt.AlignCenter)
@@ -317,8 +314,7 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         self.queue_panel_widget_frame.setFrameShape(QFrame.StyledPanel)
         self.queue_panel_widget_frame.setFrameShadow(QFrame.Raised)
 
-        queue_panel_verticalLayout_main.addWidget(
-            self.queue_panel_widget_frame)
+        queue_panel_verticalLayout_main.addWidget(self.queue_panel_widget_frame)
 
         queue_panel_verticalLayout = QVBoxLayout(self.queue_panel_widget_frame)
         queue_panel_verticalLayout_main.setContentsMargins(50, -1, 50, -1)
@@ -432,8 +428,7 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # download table widget
         self.download_table_content_widget = QWidget(self)
-        download_table_content_widget_verticalLayout = QVBoxLayout(
-            self.download_table_content_widget)
+        download_table_content_widget_verticalLayout = QVBoxLayout(self.download_table_content_widget)
 
         # download_table
         self.download_table = DownloadTableWidget(self)
@@ -459,7 +454,8 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
             QCoreApplication.translate('mainwindow_ui_tr', 'Connections'),
             QCoreApplication.translate('mainwindow_ui_tr', 'Transfer Rate'),
             QCoreApplication.translate('mainwindow_ui_tr', 'Estimated Time Left'),
-            'Gid', QCoreApplication.translate('mainwindow_ui_tr', 'Link'),
+            'Gid',
+            QCoreApplication.translate('mainwindow_ui_tr', 'Link'),
             QCoreApplication.translate('mainwindow_ui_tr', 'First Try Date'),
             QCoreApplication.translate('mainwindow_ui_tr', 'Last Try Date'),
             QCoreApplication.translate('mainwindow_ui_tr', 'Category'),
@@ -546,60 +542,84 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         self.toolBar.setFloatable(False)
         self.toolBar.setMovable(False)
 
-        #toolBar and menubar and actions
+        # toolBar and menubar and actions
         self.persepolis_setting.beginGroup('settings/shortcuts')
 
         # videoFinderAddLinkAction
         self.videoFinderAddLinkAction = QAction(
-            QIcon(icons + 'video_finder'), QCoreApplication.translate('mainwindow_ui_tr', 'Find Video Links...'),
+            QIcon(icons + 'video_finder'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Find Video Links...'),
             self,
             statusTip=QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Download video or audio from Youtube, Vimeo, etc.',
+                'mainwindow_ui_tr',
+                'Download video or audio from Youtube, Vimeo, etc.',
             ),
             triggered=self.showVideoFinderAddLinkWindow,
         )
 
-        self.videoFinderAddLinkAction_shortcut = QShortcut(self.persepolis_setting.value(
-            'video_finder_shortcut'), self, self.showVideoFinderAddLinkWindow)
+        self.videoFinderAddLinkAction_shortcut = QShortcut(
+            self.persepolis_setting.value('video_finder_shortcut'),
+            self,
+            self.showVideoFinderAddLinkWindow,
+        )
 
         videoFinderMenu.addAction(self.videoFinderAddLinkAction)
 
         # stopAllAction
         self.stopAllAction = QAction(
-            QIcon(icons + 'stop_all'), QCoreApplication.translate('mainwindow_ui_tr', 'Stop All Active Downloads'),
-            self, statusTip='Stop All Active Downloads', triggered=self.stopAllDownloads,
+            QIcon(icons + 'stop_all'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Stop All Active Downloads'),
+            self,
+            statusTip='Stop All Active Downloads',
+            triggered=self.stopAllDownloads,
         )
         downloadMenu.addAction(self.stopAllAction)
 
         # sort_file_name_Action
         self.sort_file_name_Action = QAction(
-            QCoreApplication.translate('mainwindow_ui_tr', 'File Name'), self, triggered=self.sortByName)
+            QCoreApplication.translate('mainwindow_ui_tr', 'File Name'),
+            self,
+            triggered=self.sortByName,
+        )
         sortMenu.addAction(self.sort_file_name_Action)
 
         # sort_file_size_Action
         self.sort_file_size_Action = QAction(
-            QCoreApplication.translate('mainwindow_ui_tr', 'File Size'), self, triggered=self.sortBySize)
+            QCoreApplication.translate('mainwindow_ui_tr', 'File Size'),
+            self,
+            triggered=self.sortBySize,
+        )
         sortMenu.addAction(self.sort_file_size_Action)
 
         # sort_first_try_date_Action
         self.sort_first_try_date_Action = QAction(
-            QCoreApplication.translate('mainwindow_ui_tr', 'First Try Date'), self, triggered=self.sortByFirstTry)
+            QCoreApplication.translate('mainwindow_ui_tr', 'First Try Date'),
+            self,
+            triggered=self.sortByFirstTry,
+        )
         sortMenu.addAction(self.sort_first_try_date_Action)
 
         # sort_last_try_date_Action
         self.sort_last_try_date_Action = QAction(
-            QCoreApplication.translate('mainwindow_ui_tr', 'Last Try Date'), self, triggered=self.sortByLastTry)
+            QCoreApplication.translate('mainwindow_ui_tr', 'Last Try Date'),
+            self,
+            triggered=self.sortByLastTry,
+        )
         sortMenu.addAction(self.sort_last_try_date_Action)
 
         # sort_download_status_Action
         self.sort_download_status_Action = QAction(
-            QCoreApplication.translate('mainwindow_ui_tr', 'Download Status'), self, triggered=self.sortByStatus)
+            QCoreApplication.translate('mainwindow_ui_tr', 'Download Status'),
+            self,
+            triggered=self.sortByStatus,
+        )
         sortMenu.addAction(self.sort_download_status_Action)
 
         # trayAction
         self.trayAction = QAction(
             QCoreApplication.translate('mainwindow_ui_tr', 'Show System Tray Icon'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show/Hide system tray icon'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show/Hide system tray icon'),
             triggered=self.showTray,
         )
         self.trayAction.setCheckable(True)
@@ -608,7 +628,8 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         # showMenuBarAction
         self.showMenuBarAction = QAction(
             QCoreApplication.translate('mainwindow_ui_tr', 'Show Menubar'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show Menubar'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show Menubar'),
             triggered=self.showMenuBar,
         )
         self.showMenuBarAction.setCheckable(True)
@@ -617,7 +638,8 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         # showSidePanelAction
         self.showSidePanelAction = QAction(
             QCoreApplication.translate('mainwindow_ui_tr', 'Show Side Panel'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show Side Panel'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Show Side Panel'),
             triggered=self.showSidePanel,
         )
         self.showSidePanelAction.setCheckable(True)
@@ -625,44 +647,62 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # minimizeAction
         self.minimizeAction = QAction(
-            QIcon(icons + 'minimize'), QCoreApplication.translate('mainwindow_ui_tr', 'Minimize to System Tray'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Minimize to System Tray'),
+            QIcon(icons + 'minimize'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Minimize to System Tray'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Minimize to System Tray'),
             triggered=self.minMaxTray,
         )
 
         self.minimizeAction_shortcut = QShortcut(
-            self.persepolis_setting.value('hide_window_shortcut'), self, self.minMaxTray)
+            self.persepolis_setting.value('hide_window_shortcut'),
+            self,
+            self.minMaxTray,
+        )
         viewMenu.addAction(self.minimizeAction)
 
         # addlinkAction
         self.addlinkAction = QAction(
-            QIcon(icons + 'add'),  QCoreApplication.translate('mainwindow_ui_tr', 'Add New Download Link...'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Add New Download Link'),
+            QIcon(icons + 'add'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Add New Download Link...'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Add New Download Link'),
             triggered=self.addLinkButtonPressed,
         )
 
-        self.addlinkAction_shortcut = QShortcut(self.persepolis_setting.value(
-            'add_new_download_shortcut'), self, self.addLinkButtonPressed)
+        self.addlinkAction_shortcut = QShortcut(
+            self.persepolis_setting.value('add_new_download_shortcut'),
+            self,
+            self.addLinkButtonPressed,
+        )
         fileMenu.addAction(self.addlinkAction)
 
         # addTextFileAction
         self.addtextfileAction = QAction(
-            QIcon(icons + 'file'), QCoreApplication.translate('mainwindow_ui_tr', 'Import Links from Text File...'),
-            self, statusTip=QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Create a text file and put links in it, line by line!',
+            QIcon(icons + 'file'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Import Links from Text File...'),
+            self,
+            statusTip=QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Create a text file and put links in it, line by line!',
             ),
             triggered=self.importText,
         )
 
         self.addtextfileAction_shortcut = QShortcut(
-            self.persepolis_setting.value('import_text_shortcut'), self, self.importText)
+            self.persepolis_setting.value('import_text_shortcut'),
+            self,
+            self.importText,
+        )
 
         fileMenu.addAction(self.addtextfileAction)
 
         # resumeAction
         self.resumeAction = QAction(
-            QIcon(icons + 'play'), QCoreApplication.translate('mainwindow_ui_tr', 'Resume Download'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Resume Download'),
+            QIcon(icons + 'play'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Resume Download'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Resume Download'),
             triggered=self.resumeButtonPressed,
         )
 
@@ -670,8 +710,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # pauseAction
         self.pauseAction = QAction(
-            QIcon(icons + 'pause'), QCoreApplication.translate('mainwindow_ui_tr', 'Pause Download'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Pause Download'),
+            QIcon(icons + 'pause'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Pause Download'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Pause Download'),
             triggered=self.pauseButtonPressed,
         )
 
@@ -679,8 +721,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # stopAction
         self.stopAction = QAction(
-            QIcon(icons + 'stop'), QCoreApplication.translate('mainwindow_ui_tr', 'Stop Download'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Stop/Cancel Download'),
+            QIcon(icons + 'stop'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Stop Download'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Stop/Cancel Download'),
             triggered=self.stopButtonPressed,
         )
 
@@ -688,8 +732,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # propertiesAction
         self.propertiesAction = QAction(
-            QIcon(icons + 'setting'), QCoreApplication.translate('mainwindow_ui_tr', 'Properties'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Properties'),
+            QIcon(icons + 'setting'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Properties'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Properties'),
             triggered=self.propertiesButtonPressed,
         )
 
@@ -697,8 +743,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # progressAction
         self.progressAction = QAction(
-            QIcon(icons + 'window'), QCoreApplication.translate('mainwindow_ui_tr', 'Progress'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Progress'),
+            QIcon(icons + 'window'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Progress'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Progress'),
             triggered=self.progressButtonPressed,
         )
 
@@ -706,16 +754,20 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # openFileAction
         self.openFileAction = QAction(
-            QIcon(icons + 'file'), QCoreApplication.translate('mainwindow_ui_tr', 'Open File...'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open File...'),
+            QIcon(icons + 'file'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Open File...'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open File...'),
             triggered=self.openFile,
         )
         fileMenu.addAction(self.openFileAction)
 
         # openDownloadFolderAction
         self.openDownloadFolderAction = QAction(
-            QIcon(icons + 'folder'), QCoreApplication.translate('mainwindow_ui_tr', 'Open Download Folder'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open Download Folder'),
+            QIcon(icons + 'folder'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Open Download Folder'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open Download Folder'),
             triggered=self.openDownloadFolder,
         )
 
@@ -723,8 +775,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # openDefaultDownloadFolderAction
         self.openDefaultDownloadFolderAction = QAction(
-            QIcon(icons + 'folder'), QCoreApplication.translate('mainwindow_ui_tr', 'Open Default Download Folder'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open Default Download Folder'),
+            QIcon(icons + 'folder'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Open Default Download Folder'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Open Default Download Folder'),
             triggered=self.openDefaultDownloadFolder,
         )
 
@@ -732,8 +786,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # exitAction
         self.exitAction = QAction(
-            QIcon(icons + 'exit'), QCoreApplication.translate('mainwindow_ui_tr', 'Exit'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Exit'),
+            QIcon(icons + 'exit'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Exit'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Exit'),
             triggered=self.closeAction,
         )
 
@@ -743,47 +799,64 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # clearAction
         self.clearAction = QAction(
-            QIcon(icons + 'multi_remove'), QCoreApplication.translate('mainwindow_ui_tr', 'Clear Download List'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Clear all items in download list'),
+            QIcon(icons + 'multi_remove'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Clear Download List'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Clear all items in download list'),
             triggered=self.clearDownloadList,
         )
         editMenu.addAction(self.clearAction)
 
         # removeSelectedAction
         self.removeSelectedAction = QAction(
-            QIcon(icons + 'remove'), QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Remove Selected Downloads from List',
+            QIcon(icons + 'remove'),
+            QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Remove Selected Downloads from List',
             ),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Remove Selected Downloads from List'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Remove Selected Downloads from List'),
             triggered=self.removeSelected,
         )
 
         self.removeSelectedAction_shortcut = QShortcut(
-            self.persepolis_setting.value('remove_shortcut'), self, self.removeSelected)
+            self.persepolis_setting.value('remove_shortcut'),
+            self,
+            self.removeSelected,
+        )
 
         editMenu.addAction(self.removeSelectedAction)
         self.removeSelectedAction.setEnabled(False)
 
         # deleteSelectedAction
         self.deleteSelectedAction = QAction(
-            QIcon(icons + 'trash'), QCoreApplication.translate('mainwindow_ui_tr', 'Delete Selected Download Files'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Delete Selected Download Files'),
+            QIcon(icons + 'trash'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Delete Selected Download Files'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Delete Selected Download Files'),
             triggered=self.deleteSelected,
         )
 
         self.deleteSelectedAction_shortcut = QShortcut(
-            self.persepolis_setting.value('delete_shortcut'), self, self.deleteSelected)
+            self.persepolis_setting.value('delete_shortcut'),
+            self,
+            self.deleteSelected,
+        )
 
         editMenu.addAction(self.deleteSelectedAction)
         self.deleteSelectedAction.setEnabled(False)
 
         # moveSelectedDownloadsAction
         self.moveSelectedDownloadsAction = QAction(
-            QIcon(icons + 'folder'), QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Move Selected Download Files to Another Folder...',
+            QIcon(icons + 'folder'),
+            QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Move Selected Download Files to Another Folder...',
             ),
-            self, statusTip=QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Move Selected Download Files to Another Folder',
+            self,
+            statusTip=QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Move Selected Download Files to Another Folder',
             ),
             triggered=self.moveSelectedDownloads,
         )
@@ -793,24 +866,30 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # createQueueAction
         self.createQueueAction = QAction(
-            QIcon(icons + 'add_queue'), QCoreApplication.translate('mainwindow_ui_tr', 'Create New Queue...'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Create new download queue'),
+            QIcon(icons + 'add_queue'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Create New Queue...'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Create new download queue'),
             triggered=self.createQueue,
         )
         queueMenu.addAction(self.createQueueAction)
 
         # removeQueueAction
         self.removeQueueAction = QAction(
-            QIcon(icons + 'remove_queue'), QCoreApplication.translate('mainwindow_ui_tr', 'Remove Queue'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Remove this queue'),
+            QIcon(icons + 'remove_queue'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Remove Queue'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Remove this queue'),
             triggered=self.removeQueue,
         )
         queueMenu.addAction(self.removeQueueAction)
 
         # startQueueAction
         self.startQueueAction = QAction(
-            QIcon(icons + 'start_queue'), QCoreApplication.translate('mainwindow_ui_tr', 'Start this queue'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Start Queue'),
+            QIcon(icons + 'start_queue'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Start this queue'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Start Queue'),
             triggered=self.startQueue,
         )
 
@@ -818,8 +897,10 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # stopQueueAction
         self.stopQueueAction = QAction(
-            QIcon(icons + 'stop_queue'), QCoreApplication.translate('mainwindow_ui_tr', 'Stop this queue'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Stop Queue'),
+            QIcon(icons + 'stop_queue'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Stop this queue'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Stop Queue'),
             triggered=self.stopQueue,
         )
 
@@ -827,74 +908,102 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         # moveUpSelectedAction
         self.moveUpSelectedAction = QAction(
-            QIcon(icons + 'multi_up'), QCoreApplication.translate('mainwindow_ui_tr', 'Move Selected Items Up'),
-            self, statusTip=QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Move currently selected items up by one row',
+            QIcon(icons + 'multi_up'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Move Selected Items Up'),
+            self,
+            statusTip=QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Move currently selected items up by one row',
             ),
             triggered=self.moveUpSelected,
         )
 
-        self.moveUpSelectedAction_shortcut = QShortcut(self.persepolis_setting.value(
-            'move_up_selection_shortcut'), self, self.moveUpSelected)
+        self.moveUpSelectedAction_shortcut = QShortcut(
+            self.persepolis_setting.value('move_up_selection_shortcut'),
+            self,
+            self.moveUpSelected,
+        )
 
         queueMenu.addAction(self.moveUpSelectedAction)
 
         # moveDownSelectedAction
         self.moveDownSelectedAction = QAction(
-            QIcon(icons + 'multi_down'), QCoreApplication.translate('mainwindow_ui_tr', 'Move Selected Items Down'),
-            self, statusTip=QCoreApplication.translate(
-                'mainwindow_ui_tr', 'Move currently selected items down by one row',
+            QIcon(icons + 'multi_down'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Move Selected Items Down'),
+            self,
+            statusTip=QCoreApplication.translate(
+                'mainwindow_ui_tr',
+                'Move currently selected items down by one row',
             ),
             triggered=self.moveDownSelected,
         )
-        self.moveDownSelectedAction_shortcut = QShortcut(self.persepolis_setting.value(
-            'move_down_selection_shortcut'), self, self.moveDownSelected)
+        self.moveDownSelectedAction_shortcut = QShortcut(
+            self.persepolis_setting.value('move_down_selection_shortcut'),
+            self,
+            self.moveDownSelected,
+        )
 
         queueMenu.addAction(self.moveDownSelectedAction)
 
         # preferencesAction
         self.preferencesAction = QAction(
-            QIcon(icons + 'preferences'), QCoreApplication.translate('mainwindow_ui_tr', 'Preferences'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Preferences'),
-            triggered=self.openPreferences, menuRole=QAction.MenuRole.PreferencesRole,
+            QIcon(icons + 'preferences'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Preferences'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Preferences'),
+            triggered=self.openPreferences,
+            menuRole=QAction.MenuRole.PreferencesRole,
         )
         editMenu.addAction(self.preferencesAction)
 
         # aboutAction
         self.aboutAction = QAction(
-            QIcon(icons + 'about'), QCoreApplication.translate('mainwindow_ui_tr', 'About'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'About'),
-            triggered=self.openAbout, menuRole=QAction.MenuRole.AboutRole,
+            QIcon(icons + 'about'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'About'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'About'),
+            triggered=self.openAbout,
+            menuRole=QAction.MenuRole.AboutRole,
         )
         helpMenu.addAction(self.aboutAction)
 
         # issueAction
         self.issueAction = QAction(
-            QIcon(icons + 'about'), QCoreApplication.translate('mainwindow_ui_tr', 'Report an Issue'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Report an issue'),
+            QIcon(icons + 'about'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Report an Issue'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Report an issue'),
             triggered=self.reportIssue,
         )
         helpMenu.addAction(self.issueAction)
 
         # updateAction
         self.updateAction = QAction(
-            QIcon(icons + 'about'), QCoreApplication.translate('mainwindow_ui_tr', 'Check for Newer Version'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Check for newer release'),
+            QIcon(icons + 'about'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Check for Newer Version'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Check for newer release'),
             triggered=self.newUpdate,
         )
         helpMenu.addAction(self.updateAction)
 
         # logAction
         self.logAction = QAction(
-            QIcon(icons + 'about'), QCoreApplication.translate('mainwindow_ui_tr', 'Show Log File'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Help'), triggered=self.showLog,
+            QIcon(icons + 'about'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Show Log File'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Help'),
+            triggered=self.showLog,
         )
         helpMenu.addAction(self.logAction)
 
         # helpAction
         self.helpAction = QAction(
-            QIcon(icons + 'about'), QCoreApplication.translate('mainwindow_ui_tr', 'Help'),
-            self, statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Help'), triggered=self.persepolisHelp,
+            QIcon(icons + 'about'),
+            QCoreApplication.translate('mainwindow_ui_tr', 'Help'),
+            self,
+            statusTip=QCoreApplication.translate('mainwindow_ui_tr', 'Help'),
+            triggered=self.persepolisHelp,
         )
         helpMenu.addAction(self.helpAction)
 
@@ -904,15 +1013,15 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
 
         self.toolBar2.addWidget(self.qmenu)
 
-
-# labels
+        # labels
         self.queue_panel_show_button.setText(QCoreApplication.translate('mainwindow_ui_tr', 'Hide Options'))
         self.start_checkBox.setText(QCoreApplication.translate('mainwindow_ui_tr', 'Start Time'))
 
         self.end_checkBox.setText(QCoreApplication.translate('mainwindow_ui_tr', 'End Time'))
 
-        self.reverse_checkBox.setText(QCoreApplication.translate(
-            'mainwindow_ui_tr', 'Download bottom of\n the list first'))
+        self.reverse_checkBox.setText(
+            QCoreApplication.translate('mainwindow_ui_tr', 'Download bottom of\n the list first'),
+        )
 
         self.limit_checkBox.setText(QCoreApplication.translate('mainwindow_ui_tr', 'Limit Speed'))
         self.limit_comboBox.setItemText(0, 'KiB/s')
@@ -925,7 +1034,8 @@ class MainWindow_Ui(QMainWindow):  # noqa: N801
         self.keep_awake_checkBox.setText(QCoreApplication.translate('mainwindow_ui_tr', 'Keep System Awake!'))
         self.keep_awake_checkBox.setToolTip(
             QCoreApplication.translate(
-                'mainwindow_ui_tr', '<html><head/><body><p>This option will prevent the system from going to sleep.\
+                'mainwindow_ui_tr',
+                '<html><head/><body><p>This option will prevent the system from going to sleep.\
                 It is necessary if your power manager is suspending the system automatically. </p></body></html>',
             ),
         )

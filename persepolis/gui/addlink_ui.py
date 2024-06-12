@@ -77,8 +77,7 @@ class AddLinkWindow_Ui(QWidget):  # noqa: N801
             self.setLayoutDirection(Qt.LeftToRight)
 
         # get icons name
-        icons = ':/' + \
-            str(self.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.persepolis_setting.value('settings/icons')) + '/'
 
         self.setMinimumSize(QtCore.QSize(520, 425))
         self.setWindowIcon(QIcon.fromTheme(APP_NAME, QIcon(':/ghermez.png')))
@@ -474,17 +473,25 @@ class AddLinkWindow_Ui(QWidget):  # noqa: N801
 
         self.download_later_pushButton.setText(QCoreApplication.translate('addlink_ui_tr', 'Download Later'))
 
-        self.add_link_tabWidget.setTabText(self.add_link_tabWidget.indexOf(
-            self.link_tab), QCoreApplication.translate('addlink_ui_tr', 'Link'))
+        self.add_link_tabWidget.setTabText(
+            self.add_link_tabWidget.indexOf(self.link_tab),
+            QCoreApplication.translate('addlink_ui_tr', 'Link'),
+        )
 
-        self.add_link_tabWidget.setTabText(self.add_link_tabWidget.indexOf(
-            self.proxy_tab), QCoreApplication.translate('addlink_ui_tr', 'Proxy'))
+        self.add_link_tabWidget.setTabText(
+            self.add_link_tabWidget.indexOf(self.proxy_tab),
+            QCoreApplication.translate('addlink_ui_tr', 'Proxy'),
+        )
 
-        self.add_link_tabWidget.setTabText(self.add_link_tabWidget.indexOf(
-            self.more_options_tab), QCoreApplication.translate('addlink_ui_tr', 'More Options'))
+        self.add_link_tabWidget.setTabText(
+            self.add_link_tabWidget.indexOf(self.more_options_tab),
+            QCoreApplication.translate('addlink_ui_tr', 'More Options'),
+        )
 
-        self.add_link_tabWidget.setTabText(self.add_link_tabWidget.indexOf(
-            self.advance_options_tab), QCoreApplication.translate('addlink_ui_tr', 'Advanced Options'))
+        self.add_link_tabWidget.setTabText(
+            self.add_link_tabWidget.indexOf(self.advance_options_tab),
+            QCoreApplication.translate('addlink_ui_tr', 'Advanced Options'),
+        )
 
         self.referer_label.setText(QCoreApplication.translate('addlink_ui_tr', 'Referrer: '))
 

@@ -56,19 +56,23 @@ class checkupdate(QWidget):  # noqa: N801
         self.client_version = '3.20'
 
         # first line text
-        self.update_label = QLabel(QCoreApplication.translate(
-            'update_src_ui_tr', f'The newest is the best, we recommend to update {APP_NAME.capitalize()}.'))
+        self.update_label = QLabel(
+            QCoreApplication.translate(
+                'update_src_ui_tr',
+                f'The newest is the best, we recommend to update {APP_NAME.capitalize()}.',
+            ),
+        )
         self.update_label.setTextFormat(QtCore.Qt.RichText)
         self.update_label.setAlignment(QtCore.Qt.AlignCenter)
 
         # second line text
-        self.version_label = QLabel(QCoreApplication.translate(
-            'update_src_ui_tr', f'This is {LONG_NAME} version {VERSION}'))
+        self.version_label = QLabel(
+            QCoreApplication.translate('update_src_ui_tr', f'This is {LONG_NAME} version {VERSION}'),
+        )
         self.version_label.setAlignment(QtCore.Qt.AlignCenter)
 
         # release link
-        self.link_label = QLabel(
-            f'<a href={REPO_LINK}/releases>{REPO_LINK}/releases</a>')
+        self.link_label = QLabel(f'<a href={REPO_LINK}/releases>{REPO_LINK}/releases</a>')
         self.link_label.setAlignment(QtCore.Qt.AlignCenter)
         self.link_label.setOpenExternalLinks(True)
 
@@ -97,10 +101,8 @@ class checkupdate(QWidget):  # noqa: N801
         self.setLayout(hbox)
 
         # window size and position
-        size = self.persepolis_setting.value(
-            'checkupdate/size', QSize(360, 250))
-        position = self.persepolis_setting.value(
-            'checkupdate/position', QPoint(300, 300))
+        size = self.persepolis_setting.value('checkupdate/size', QSize(360, 250))
+        position = self.persepolis_setting.value('checkupdate/position', QPoint(300, 300))
 
         self.resize(size)
         self.move(position)
@@ -121,34 +123,38 @@ class checkupdate(QWidget):  # noqa: N801
 
             # Comparison
             if float(server_version) > float(self.client_version):
-                self.status_label.setText(QCoreApplication.translate(
-                    'update_src_ui_tr', f'A newer {APP_NAME.capitalize()} release is available'))
+                self.status_label.setText(
+                    QCoreApplication.translate(
+                        'update_src_ui_tr',
+                        f'A newer {APP_NAME.capitalize()} release is available',
+                    ),
+                )
 
                 if os_type == OS.WINDOWS:
                     self.winUpdatedl()  # this function download latest release
 
                     # find system architect
                     if platform.architecture()[0] == '64bit':
-
                         ghermez.xdgOpen(updatesource_dict['win64dlurl'])
 
                     elif platform.architecture()[0] == '32bit':
-
                         ghermez.xdgOpen(updatesource_dict['win32dlurl'])
 
                 elif os_type == OS.OSX:
                     ghermez.xdgOpen(updatesource_dict['macdlurl'])  # it will download latest release for mac
 
             elif float(server_version) == float(self.client_version):
-                self.status_label.setText(QCoreApplication.translate(
-                    'update_src_ui_tr', 'Latest version is installed :)'))
+                self.status_label.setText(
+                    QCoreApplication.translate('update_src_ui_tr', 'Latest version is installed :)'),
+                )
 
             elif float(server_version) < float(self.client_version):
                 self.status_label.setText(QCoreApplication.translate('update_src_ui_tr', 'You are using beta version'))
 
         except Exception:
-            self.status_label.setText(QCoreApplication.translate(
-                'update_src_ui_tr', 'An error occurred while checking for updates.'))
+            self.status_label.setText(
+                QCoreApplication.translate('update_src_ui_tr', 'An error occurred while checking for updates.'),
+            )
 
         self.check_button.setText(QCoreApplication.translate('update_src_ui_tr', 'Check for new update'))
 
@@ -157,12 +163,9 @@ class checkupdate(QWidget):  # noqa: N801
         if event.key() == Qt.Key_Escape:
             self.close()
 
-
     def closeEvent(self, event: QCloseEvent) -> None:
         # saving window size and position
-        self.persepolis_setting.setValue(
-            'checkupdate/size', self.size())
-        self.persepolis_setting.setValue(
-            'checkupdate/position', self.pos())
+        self.persepolis_setting.setValue('checkupdate/size', self.size())
+        self.persepolis_setting.setValue('checkupdate/position', self.pos())
         self.persepolis_setting.sync()
         event.accept()

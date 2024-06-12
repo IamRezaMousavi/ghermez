@@ -25,22 +25,18 @@ home_address = os.path.expanduser('~')
 
 # this method finds file manager in linux
 def findFileManager() -> str:
-    pipe = subprocess.check_output(['xdg-mime',
-                                    'query',
-                                    'default',
-                                    'inode/directory'])
+    pipe = subprocess.check_output(['xdg-mime', 'query', 'default', 'inode/directory'])
     return pipe.decode('utf-8').strip().lower()
 
 
-
 def touch(file_path: str) -> None:
-    if not(os.path.isfile(file_path)):
+    if not (os.path.isfile(file_path)):
         f = open(file_path, 'w')  # noqa: SIM115
         f.close()
 
-# xdgOpen opens files or folders
-def xdgOpen(file_path: str, f_type: str='file', path: str='file') -> None:
 
+# xdgOpen opens files or folders
+def xdgOpen(file_path: str, f_type: str = 'file', path: str = 'file') -> None:
     # we have a file path and we want to open it's directory.
     # highlit(select) file in file manager after opening.
     # it's help to find file easier :)
@@ -48,35 +44,32 @@ def xdgOpen(file_path: str, f_type: str='file', path: str='file') -> None:
 
     # for linux and bsd
     if os_type in OS.UNIX_LIKE:
-
         file_manager = findFileManager()
         # check default file manager.
         # some file managers wouldn't support highlighting.
         if highlight:
-
             # dolphin is kde plasma's file manager
             if 'dolphin' in file_manager:
-
-                subprocess.Popen(['dolphin',
-                                  '--select', file_path],
-                                 stderr=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 shell=False)
+                subprocess.Popen(
+                    ['dolphin', '--select', file_path],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
             # dde-file-manager is deepin's file manager
             elif 'dde-file-manager' in file_manager:
-
-                subprocess.Popen(['dde-file-manager',
-                                  '--show-item', file_path],
-                                 stderr=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 shell=False)
+                subprocess.Popen(
+                    ['dde-file-manager', '--show-item', file_path],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
             # if file manager is nautilus or nemo or pantheon-file-manager
             elif file_manager in ['org.gnome.nautilus.desktop', 'nemo.desktop', 'io.elementary.files.desktop']:
-
                 # nautilus is gnome's file manager.
                 if 'nautilus' in file_manager:
                     file_manager = 'nautilus'
@@ -89,12 +82,13 @@ def xdgOpen(file_path: str, f_type: str='file', path: str='file') -> None:
                 elif 'nemo' in file_manager:
                     file_manager = 'nemo'
 
-                subprocess.Popen([file_manager,
-                                  file_path],
-                                 stderr=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 shell=False)
+                subprocess.Popen(
+                    [file_manager, file_path],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
             else:
                 # find folder path
@@ -106,58 +100,67 @@ def xdgOpen(file_path: str, f_type: str='file', path: str='file') -> None:
 
                 folder_path = file_name.join(file_path_split)
 
-                subprocess.Popen(['xdg-open', folder_path],
-                                 stderr=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 shell=False)
+                subprocess.Popen(
+                    ['xdg-open', folder_path],
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    shell=False,
+                )
 
         else:
-
-            subprocess.Popen(['xdg-open', file_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False)
+            subprocess.Popen(
+                ['xdg-open', file_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
     # for Mac OS X
     elif os_type == OS.OSX:
         if highlight:
-
-            subprocess.Popen(['open', '-R', file_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False)
+            subprocess.Popen(
+                ['open', '-R', file_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
         else:
-
-            subprocess.Popen(['open', file_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False)
+            subprocess.Popen(
+                ['open', file_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
     # for MS Windows
     elif os_type == OS.WINDOWS:
         CREATE_NO_WINDOW = 0x08000000
 
         if highlight:
-            subprocess.Popen(['explorer.exe', '/select,',  file_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False,
-                             creationflags=CREATE_NO_WINDOW)
+            subprocess.Popen(
+                ['explorer.exe', '/select,', file_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+                creationflags=CREATE_NO_WINDOW,
+            )
 
         else:
+            subprocess.Popen(
+                ['cmd', '/C', 'start', file_path, file_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+                creationflags=CREATE_NO_WINDOW,
+            )
 
-            subprocess.Popen(['cmd', '/C', 'start', file_path,  file_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False,
-                             creationflags=CREATE_NO_WINDOW)
 
 # remove file with path of file_path
 def remove(file_path: str) -> Literal['ok', 'cant', 'no']:
@@ -175,9 +178,9 @@ def remove(file_path: str) -> Literal['ok', 'cant', 'no']:
         # function returns this , if file is not existed
         return 'no'
 
+
 # removeDir removes folder : folder_path
 def removeDir(folder_path: str) -> Literal['ok', 'cant', 'no']:
-
     # check folder_path existence
     if os.path.isdir(folder_path):
         try:
@@ -192,26 +195,25 @@ def removeDir(folder_path: str) -> Literal['ok', 'cant', 'no']:
         # return 'no' if file didn't existed
         return 'no'
 
+
 # make directory
-def makeDirs(folder_path: str, hidden: bool=False) -> str:
-
+def makeDirs(folder_path: str, hidden: bool = False) -> str:
     if hidden:
-
         # create hidden attribute directory.
         if os_type == OS.WINDOWS:
-
             os.makedirs(folder_path, exist_ok=True)
 
             # in MS Windows "attrib +h" command hidden directory.
             CREATE_NO_WINDOW = 0x08000000
-            subprocess.Popen(['attrib', '+h', folder_path],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False,
-                             creationflags=CREATE_NO_WINDOW)
+            subprocess.Popen(
+                ['attrib', '+h', folder_path],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+                creationflags=CREATE_NO_WINDOW,
+            )
         else:
-
             # In linux and bsd a dot character must be added in the start of the directory's name
             dir_name = os.path.basename(folder_path)
             dir_name = '.' + dir_name
@@ -224,26 +226,24 @@ def makeDirs(folder_path: str, hidden: bool=False) -> str:
 
     return folder_path
 
+
 # this function returns mount point
 def findMountPoint(path: str) -> str:
-
     while not os.path.ismount(path):
         path = os.path.dirname(path)
 
     return path
 
+
 # this function creates temporary download folder in mount point of given path
 def makeTempDownloadDir(path: str) -> str:
-
     # if path and home_address are in the same partition,
     # create temp folder in default settings address.
     if os.lstat(path).st_dev == os.lstat(home_address):
-
         if os_type != OS.WINDOWS:
             download_path_temp = os.path.join(home_address, '.persepolis')
         else:
-            download_path_temp = os.path.join(
-                home_address, 'AppData', 'Local', 'persepolis')
+            download_path_temp = os.path.join(home_address, 'AppData', 'Local', 'persepolis')
 
         # create directory
         download_path_temp = makeDirs(download_path_temp)
@@ -257,11 +257,11 @@ def makeTempDownloadDir(path: str) -> str:
         # Please checkout osCommands.py for more information.
         download_path_temp = makeDirs(download_path_temp, hidden=True)
 
-
     return download_path_temp
 
+
 # move downloaded file to another destination.
-def moveFile(old_file_path: str, new_path: str, new_path_type: str='folder') -> bool:
+def moveFile(old_file_path: str, new_path: str, new_path_type: str = 'folder') -> bool:
     # new_path_type can be file or folder
     # if it's folder so we have folder path
     # else we have new file path that includes file name

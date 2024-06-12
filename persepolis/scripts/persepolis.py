@@ -61,10 +61,10 @@ global lock_file_validation
 if os_type != OS.WINDOWS:
     import fcntl
 
-# persepolis lock file
+    # persepolis lock file
     lock_file = '/tmp/persepolis_exec_' + os.getlogin() + '.lock'  # noqa: S108
 
-# create lock file
+    # create lock file
     fp = open(lock_file, 'w')  # noqa: SIM115
 
     try:
@@ -89,10 +89,11 @@ if lock_file_validation:
     from persepolis.scripts import initialization  # noqa: F401
     from persepolis.scripts.mainwindow import MainWindow
 
-# set "persepolis" name for this process in linux and bsd
+    # set "persepolis" name for this process in linux and bsd
     if os_type in OS.UNIX_LIKE:
         try:
             from setproctitle import setproctitle
+
             setproctitle(APP_NAME)
         except ImportError:
             ghermez.sendToLog('setproctitle is not installed!', 'ERROR')
@@ -118,6 +119,7 @@ class PersepolisApplication(QApplication):
 
         if custom_font == 'yes':
             self.setFont(QFont(font, font_size))
+
     # color_scheme
     def setPersepolisColorScheme(self, color_scheme: str) -> None:
         self.persepolis_color_scheme = color_scheme
@@ -143,22 +145,37 @@ parser = argparse.ArgumentParser(description=LONG_NAME)
 # parser.add_argument('chromium', nargs = '?', default = 'no',
 #                     help='this switch is used for chrome native messaging in Linux and Mac')
 parser.add_argument('--link', action='store', nargs=1, help='Download link.(Use "" for links)')
-parser.add_argument('--referer', action='store', nargs=1,
-                    help='Set an http referrer (Referer). This affects all http/https downloads. \
-                    If * is given, the download URI is also used as the referrer.')
+parser.add_argument(
+    '--referer',
+    action='store',
+    nargs=1,
+    help='Set an http referrer (Referer). This affects all http/https downloads. \
+                    If * is given, the download URI is also used as the referrer.',
+)
 parser.add_argument('--cookie', action='store', nargs=1, help='Cookie')
-parser.add_argument('--agent', action='store', nargs=1,
-                    help='Set user agent for HTTP(S) downloads. \
-                        Default: aria2/$VERSION, $VERSION is replaced by package version.')
+parser.add_argument(
+    '--agent',
+    action='store',
+    nargs=1,
+    help='Set user agent for HTTP(S) downloads. \
+                        Default: aria2/$VERSION, $VERSION is replaced by package version.',
+)
 parser.add_argument('--headers', action='store', nargs=1, help='Append HEADER to HTTP request header. ')
 parser.add_argument('--name', action='store', nargs=1, help='The  file  name  of  the downloaded file. ')
 parser.add_argument('--default', action='store_true', help='restore default setting')
 parser.add_argument('--clear', action='store_true', help='Clear download list and user setting!')
-parser.add_argument('--tray', action='store_true',
-                    help="Persepolis is starting in tray icon. \
-                        It's useful when you want to put persepolis in system's startup.")
-parser.add_argument('--parent-window', action='store', nargs=1,
-                    help='this switch is used for chrome native messaging in Windows')
+parser.add_argument(
+    '--tray',
+    action='store_true',
+    help="Persepolis is starting in tray icon. \
+                        It's useful when you want to put persepolis in system's startup.",
+)
+parser.add_argument(
+    '--parent-window',
+    action='store',
+    nargs=1,
+    help='this switch is used for chrome native messaging in Windows',
+)
 parser.add_argument('--version', action='version', version=f'{LONG_NAME} {VERSION}')
 
 
@@ -172,23 +189,24 @@ browser_url = True
 
 add_link_dictionary = {}
 plugin_list = []
-browser_plugin_dict = {'link': None,
-                       'referer': None,
-                       'load_cookies': None,
-                       'user_agent': None,
-                       'header': None,
-                       'out': None,
-                       }
+browser_plugin_dict = {
+    'link': None,
+    'referer': None,
+    'load_cookies': None,
+    'user_agent': None,
+    'header': None,
+    'out': None,
+}
 
 
 # This dirty trick will show Persepolis version when there are unknown args
 # Unknown args are sent by Browsers for NHM
 if args.parent_window or unknownargs:
-
     # Platform specific configuration
     if os_type == OS.WINDOWS:
         # Set the default I/O mode to O_BINARY in windows
         import msvcrt
+
         msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
         msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
@@ -207,16 +225,13 @@ if args.parent_window or unknownargs:
     text = sys.stdin.buffer.read(text_length).decode('utf-8')
 
     if text:
-
         new_dict = json.loads(text)
 
         if 'url_links' in new_dict:
-
             # new_dict is sended by persepolis browser add-on.
             # new_dict['url_links'] contains some lists.
             # every list contains link information.
             for item in new_dict['url_links']:
-
                 copy_dict = deepcopy(browser_plugin_dict)
 
                 if 'url' in item:
@@ -273,7 +288,7 @@ if args.default:
 if args.link:
     add_link_dictionary['link'] = ''.join(args.link)
 
-# if plugins call persepolis, then just start persepolis in system tray
+    # if plugins call persepolis, then just start persepolis in system tray
     args.tray = True
 
 if args.referer:
@@ -314,18 +329,18 @@ start_in_tray = bool(args.tray)
 # from user (port , proxy , ...) and download starts and request file deleted
 
 if 'link' in add_link_dictionary:
-    plugin_dict = {'link': add_link_dictionary['link'],
-                   'referer': add_link_dictionary['referer'],
-                   'load_cookies': add_link_dictionary['load_cookies'],
-                   'user_agent': add_link_dictionary['user_agent'],
-                   'header': add_link_dictionary['header'],
-                   'out': add_link_dictionary['out'],
-                   }
+    plugin_dict = {
+        'link': add_link_dictionary['link'],
+        'referer': add_link_dictionary['referer'],
+        'load_cookies': add_link_dictionary['load_cookies'],
+        'user_agent': add_link_dictionary['user_agent'],
+        'header': add_link_dictionary['header'],
+        'out': add_link_dictionary['out'],
+    }
 
     plugin_list.append(plugin_dict)
 
 if len(plugin_list) != 0:
-
     from ghermez import PluginsDB
 
     # create an object for PluginsDB
@@ -356,9 +371,10 @@ else:
 
 def main() -> None:
     # if lock_file is existed , it means persepolis is still running!
-    if lock_file_validation and (not((args.parent_window or unknownargs) and browser_url is False) or \
-        ((args.parent_window or unknownargs) and start_persepolis_if_browser_executed)):
-
+    if lock_file_validation and (
+        not ((args.parent_window or unknownargs) and browser_url is False)
+        or ((args.parent_window or unknownargs) and start_persepolis_if_browser_executed)
+    ):
         # set QT_AUTO_SCREEN_SCALE_FACTOR to 1 for "high DPI displays"
         os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = '1'
 
@@ -374,7 +390,6 @@ def main() -> None:
         except AttributeError:
             # write error_message in log file.
             ghermez.sendToLog('Qt.AA_EnableHighDpiScaling is not available!', 'ERROR')
-
 
         # create QApplication
         persepolis_download_manager = PersepolisApplication(sys.argv)
@@ -442,13 +457,11 @@ def main() -> None:
 
         sys.exit(persepolis_download_manager.exec_())
 
-    elif not(args.parent_window or unknownargs):
-
+    elif not (args.parent_window or unknownargs):
         # this section warns user that program is still running and no need to run it again
         # and creating a file to notify mainwindow for showing itself!
         # (see CheckingThread in mainwindow.py for more information)
         if len(plugin_list) == 0:
-
             show_window_file = os.path.join(persepolis_tmp, 'show-window')
             f = open(show_window_file, 'w')  # noqa: SIM115
             f.close()

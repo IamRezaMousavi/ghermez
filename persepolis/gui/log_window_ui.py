@@ -48,8 +48,7 @@ class LogWindow_Ui(QWidget):  # noqa: N801
         elif ui_direction in 'ltr':
             self.setLayoutDirection(Qt.LeftToRight)
 
-        icons = ':/' + \
-            str(self.persepolis_setting.value('settings/icons')) + '/'
+        icons = ':/' + str(self.persepolis_setting.value('settings/icons')) + '/'
 
         # finding windows_size
         self.setMinimumSize(QtCore.QSize(620, 300))
@@ -59,40 +58,40 @@ class LogWindow_Ui(QWidget):  # noqa: N801
         horizontalLayout = QHBoxLayout()
         horizontalLayout.addStretch(1)
 
-# text_edit
+        # text_edit
         self.text_edit = QTextEdit(self)
         self.text_edit.setReadOnly(True)
 
         verticalLayout.addWidget(self.text_edit)
 
-# clear_log_pushButton
+        # clear_log_pushButton
         self.clear_log_pushButton = QPushButton(self)
         horizontalLayout.addWidget(self.clear_log_pushButton)
 
-# refresh_log_pushButton
+        # refresh_log_pushButton
         self.refresh_log_pushButton = QPushButton(self)
         self.refresh_log_pushButton.setIcon(QIcon(icons + 'refresh'))
         horizontalLayout.addWidget(self.refresh_log_pushButton)
 
-# report_pushButton
+        # report_pushButton
         self.report_pushButton = QPushButton(self)
         self.report_pushButton.setIcon(QIcon(icons + 'about'))
         horizontalLayout.addWidget(self.report_pushButton)
 
         self.copy_log_pushButton = QPushButton(self)
 
-# copy_log_pushButton
+        # copy_log_pushButton
         self.copy_log_pushButton.setIcon(QIcon(icons + 'clipboard'))
         horizontalLayout.addWidget(self.copy_log_pushButton)
 
-# close_pushButton
+        # close_pushButton
         self.close_pushButton = QPushButton(self)
         self.close_pushButton.setIcon(QIcon(icons + 'remove'))
         horizontalLayout.addWidget(self.close_pushButton)
 
         verticalLayout.addLayout(horizontalLayout)
 
-# set labels
+        # set labels
 
         self.setWindowTitle(QCoreApplication.translate('log_window_ui_tr', f'{APP_NAME.capitalize()} Log'))
         self.close_pushButton.setText(QCoreApplication.translate('log_window_ui_tr', 'Close'))

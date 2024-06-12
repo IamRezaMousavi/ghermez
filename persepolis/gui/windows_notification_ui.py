@@ -20,6 +20,7 @@ except ImportError:
     from PyQt5.QtCore import QPoint, QRect, QSettings, QSize, Qt
     from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
+
 class WindowsNotification_UI(QWidget):  # noqa: N801
     def __init__(self, parent: QWidget, persepolis_setting: QSettings) -> None:
         super().__init__(parent)

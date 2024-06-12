@@ -120,7 +120,7 @@ pub struct Status {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct BittorrentStatus {
-    pub announce_list: Vec<String>,
+    pub announce_list: Vec<Vec<String>>,
 
     pub comment: Option<String>,
 

@@ -74,8 +74,7 @@ class AfterDownloadWindow(AfterDownloadWindow_Ui):
         # file_name
 
         window_title = str(self.dict['file_name'])
-        file_name = QCoreApplication.translate('after_download_src_ui_tr', '<b>File name</b>: ') + \
-            window_title
+        file_name = QCoreApplication.translate('after_download_src_ui_tr', '<b>File name</b>: ') + window_title
 
         self.setWindowTitle(window_title)
 
@@ -90,10 +89,8 @@ class AfterDownloadWindow(AfterDownloadWindow_Ui):
         self.save_as_lineEdit.setEnabled(False)
 
         # set window size and position
-        size = self.persepolis_setting.value(
-            'AfterDownloadWindow/size', QSize(570, 290))
-        position = self.persepolis_setting.value(
-            'AfterDownloadWindow/position', QPoint(300, 300))
+        size = self.persepolis_setting.value('AfterDownloadWindow/size', QSize(570, 290))
+        position = self.persepolis_setting.value('AfterDownloadWindow/position', QPoint(300, 300))
         self.resize(size)
         self.move(position)
 
@@ -130,13 +127,10 @@ class AfterDownloadWindow(AfterDownloadWindow_Ui):
         if event.key() == Qt.Key_Escape:
             self.close()
 
-
     def closeEvent(self, event: QCloseEvent) -> None:
         # saving window size and position
-        self.persepolis_setting.setValue(
-            'AfterDownloadWindow/size', self.size())
-        self.persepolis_setting.setValue(
-            'AfterDownloadWindow/position', self.pos())
+        self.persepolis_setting.setValue('AfterDownloadWindow/size', self.size())
+        self.persepolis_setting.setValue('AfterDownloadWindow/position', self.pos())
         self.persepolis_setting.sync()
         event.accept()
 

@@ -93,8 +93,9 @@ def getProxy() -> dict[str, str]:
 
                 # get https proxy
                 try:
-                    proxy['https_proxy_port'] = proxysource['httpsProxy'].split(
-                        ' ')[1].replace('/', '').replace('\n', '')
+                    proxy['https_proxy_port'] = (
+                        proxysource['httpsProxy'].split(' ')[1].replace('/', '').replace('\n', '')
+                    )
                     proxy['https_proxy_ip'] = proxysource['httpsProxy'].split(' ')[0].split('//')[1]
                 except Exception:
                     ghermez.sendToLog('no manual https proxy detected', 'INFO')
@@ -117,15 +118,17 @@ def getProxy() -> dict[str, str]:
     # Detect proxy from GNOME Desktop
     elif desktop == 'GNOME':
         process = subprocess.run(['gsettings', 'get', 'org.gnome.system.proxy', 'mode'], stdout=subprocess.PIPE)
-        mode = re.search(r'manual' , process.stdout.decode('utf-8'))
+        mode = re.search(r'manual', process.stdout.decode('utf-8'))
         if mode is not None:
             try:
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.http', 'host'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.http', 'host'],
+                    stdout=subprocess.PIPE,
                 )
-                proxy['http_proxy_ip'] = re.search(r"\'([\w0-9\.]+)\'" , process.stdout.decode('utf-8')).group(1)
+                proxy['http_proxy_ip'] = re.search(r'\'([\w0-9\.]+)\'', process.stdout.decode('utf-8')).group(1)
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.http', 'port'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.http', 'port'],
+                    stdout=subprocess.PIPE,
                 )
                 proxy['http_proxy_port'] = process.stdout.decode('utf-8')
             except Exception:
@@ -133,11 +136,13 @@ def getProxy() -> dict[str, str]:
 
             try:
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.https', 'host'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.https', 'host'],
+                    stdout=subprocess.PIPE,
                 )
-                proxy['https_proxy_ip'] = re.search(r"\'([\w0-9\.]+)\'" , process.stdout.decode('utf-8')).group(1)
+                proxy['https_proxy_ip'] = re.search(r'\'([\w0-9\.]+)\'', process.stdout.decode('utf-8')).group(1)
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.https', 'port'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.https', 'port'],
+                    stdout=subprocess.PIPE,
                 )
                 proxy['https_proxy_port'] = process.stdout.decode('utf-8')
             except Exception:
@@ -145,11 +150,13 @@ def getProxy() -> dict[str, str]:
 
             try:
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.ftp', 'host'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.ftp', 'host'],
+                    stdout=subprocess.PIPE,
                 )
-                proxy['ftp_proxy_ip'] = re.search(r"\'([\w0-9\.]+)\'" , process.stdout.decode('utf-8')).group(1)
+                proxy['ftp_proxy_ip'] = re.search(r'\'([\w0-9\.]+)\'', process.stdout.decode('utf-8')).group(1)
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.ftp', 'port'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.ftp', 'port'],
+                    stdout=subprocess.PIPE,
                 )
                 proxy['ftp_proxy_port'] = process.stdout.decode('utf-8')
             except Exception:
@@ -157,7 +164,8 @@ def getProxy() -> dict[str, str]:
 
             try:
                 process = subprocess.run(
-                    ['gsettings', 'get', 'org.gnome.system.proxy.socks', 'host'], stdout=subprocess.PIPE,
+                    ['gsettings', 'get', 'org.gnome.system.proxy.socks', 'host'],
+                    stdout=subprocess.PIPE,
                 )
                 socks_proxy = True
             except Exception:
@@ -198,7 +206,6 @@ def getProxy() -> dict[str, str]:
                 socks_proxy = proxysource['all'].split(':')[1].replace('//', '')
             # if it is Mac OS
             elif os_type == OS.OSX:
-
                 validKeys = ['SOCKSEnable']
 
                 # get proxies list using scutil command and parse it in tmp list

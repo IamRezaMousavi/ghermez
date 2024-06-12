@@ -8,7 +8,7 @@ use std::{
     thread, time,
 };
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "windows")]
 use std::env;
 
 #[cfg(target_os = "windows")]
@@ -39,7 +39,7 @@ pub fn startAria(port: u16, _aria2_path: Option<String>) -> Option<String> {
         *tmp = format!("ws://127.0.0.1:{port}/jsonrpc");
     });
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     let _child = match Command::new("aria2c")
         .arg("--no-conf")
         .arg("--enable-rpc")
@@ -54,52 +54,18 @@ pub fn startAria(port: u16, _aria2_path: Option<String>) -> Option<String> {
         Ok(child) => child,
     };
 
-    #[cfg(target_os = "macos")]
-    {
-        let aria2d = if _aria2_path.is_none()
-            || _aria2_path
-                .as_ref()
-                .is_some_and(|x| x.is_empty() || !Path::new(&x).is_file())
-        {
-            let aria2 = env::current_dir().unwrap().join("aria2c.exe");
-            aria2.to_str().unwrap().to_string()
-        } else {
-            _aria2_path.as_ref().unwrap().to_string()
-        };
-        if !Path::new(&aria2d).exists() {
-            error!("Aria2 does not exist in the current path!");
-            return None;
-        }
-
-        let _child = match Command::new(aria2d)
-            .arg("--no-conf")
-            .arg("--enable-rpc")
-            .arg(format!("--rpc-listen-port={}", port))
-            .arg("--rpc-allow-origin-all")
-            .arg("--quiet=true")
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
-            .spawn()
-        {
-            Err(why) => panic!("couldn't spawn aria2c: {:?}", why),
-            Ok(child) => child,
-        };
-    }
-
     #[cfg(target_os = "windows")]
     {
-        let aria2d = if _aria2_path.is_none()
-            || _aria2_path
-                .as_ref()
-                .is_some_and(|x| x.is_empty() || !Path::new(&x).is_file())
+        let aria2d = if _aria2_path
+            .clone()
+            .is_some_and(|x| !x.is_empty() && Path::new(&x).is_file())
         {
+            _aria2_path.as_ref().unwrap().to_string()
+        } else {
             let aria2 = env::current_dir().unwrap().join("aria2c.exe");
             aria2.to_str().unwrap().to_string()
-        } else {
-            _aria2_path.as_ref().unwrap().to_string()
         };
-        println!("aria2d: {aria2d}");
+
         if !Path::new(&aria2d).exists() {
             error!("Aria2 does not exist in the current path!");
             return None;

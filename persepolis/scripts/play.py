@@ -36,47 +36,47 @@ def playNotification(file: str) -> None:
     volume_percent = int(persepolis_setting.value('settings/sound-volume'))
 
     # Paplay volume value must be between 0 (silent) and 65536 (100% volume)
-    volume = int((65536 * volume_percent)/100)
+    volume = int((65536 * volume_percent) / 100)
 
     if enable_notification == 'yes':
         if os_type in OS.UNIX_LIKE:
-
-            pipe = subprocess.Popen(['paplay', '--volume=' + str(volume),
-                                     str(file)],
-                                    stderr=subprocess.PIPE,
-                                    stdout=subprocess.PIPE,
-                                    stdin=subprocess.PIPE,
-                                    shell=False)
+            pipe = subprocess.Popen(
+                ['paplay', '--volume=' + str(volume), str(file)],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
             answer = pipe.wait()
 
             if answer != 0:
-                ghermez.sendToLog(
-                    'paplay not installed!Install it for playing sound notification', 'WARNING')
+                ghermez.sendToLog('paplay not installed!Install it for playing sound notification', 'WARNING')
 
         elif os_type == OS.OSX:
+            pipe = subprocess.Popen(
+                ['osascript', '-e', 'set', 'volume', 'alert', 'volume', str(volume)],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
-            pipe = subprocess.Popen(['osascript', '-e',
-                                     'set', 'volume', 'alert',
-                                     'volume', str(volume)],
-                                    stderr=subprocess.PIPE,
-                                    stdout=subprocess.PIPE,
-                                    stdin=subprocess.PIPE,
-                                    shell=False)
-
-            pipe = subprocess.Popen(['osascript', '-e',
-                                     'beep', '3'],
-                                    stderr=subprocess.PIPE,
-                                    stdout=subprocess.PIPE,
-                                    stdin=subprocess.PIPE,
-                                    shell=False)
+            pipe = subprocess.Popen(
+                ['osascript', '-e', 'beep', '3'],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+            )
 
         elif os_type == OS.WINDOWS:
-
             CREATE_NO_WINDOW = 0x08000000
-            subprocess.Popen(['rundll32', 'user32.dll,MessageBeep'],
-                             stderr=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stdin=subprocess.PIPE,
-                             shell=False,
-                             creationflags=CREATE_NO_WINDOW)
+            subprocess.Popen(
+                ['rundll32', 'user32.dll,MessageBeep'],
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=False,
+                creationflags=CREATE_NO_WINDOW,
+            )

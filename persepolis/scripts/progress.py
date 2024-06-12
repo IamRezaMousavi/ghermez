@@ -35,8 +35,9 @@ from persepolis.scripts.shutdown import shutDown
 
 os_type = platform.system()
 
+
 class ShutDownThread(QThread):
-    def __init__(self, parent: QWidget, gid: str, password: str | None=None) -> None:
+    def __init__(self, parent: QWidget, gid: str, password: str | None = None) -> None:
         super().__init__()
         self.gid = gid
         self.password = password
@@ -95,10 +96,8 @@ class ProgressWindow(ProgressWindow_Ui):
         self.limit_spinBox.valueChanged.connect(self.limitComboBoxChanged)
 
         # set window size and position
-        size = self.persepolis_setting.value(
-            'ProgressWindow/size', QSize(595, 274))
-        position = self.persepolis_setting.value(
-            'ProgressWindow/position', QPoint(300, 300))
+        size = self.persepolis_setting.value('ProgressWindow/size', QSize(595, 274))
+        position = self.persepolis_setting.value('ProgressWindow/position', QPoint(300, 300))
         self.resize(size)
         self.move(position)
 
@@ -106,7 +105,6 @@ class ProgressWindow(ProgressWindow_Ui):
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key_Escape:
             self.close()
-
 
     def closeEvent(self, _event: QCloseEvent) -> None:
         # save window size and position
@@ -117,50 +115,65 @@ class ProgressWindow(ProgressWindow_Ui):
         self.hide()
 
     def resumePushButtonPressed(self, _button: QPushButton) -> None:
-
         if self.status == DownloadStatus.Paused:
             answer = ghermez.downloadUnpause(self.gid)
 
             # if aria2 did not respond , then this function is checking for aria2
             # availability , and if aria2 disconnected then aria2Disconnected is
             # executed
-            if not(answer):
+            if not (answer):
                 version_answer = ghermez.aria2Version()
                 if version_answer == 'did not respond':
                     self.parent.aria2Disconnected()
-                    notifySend(QCoreApplication.translate('progress_src_ui_tr', 'Aria2 disconnected!'),
-                               QCoreApplication.translate('progress_src_ui_tr',
-                                                          'Persepolis is trying to connect! be patient!'),
-                               10000, 'warning', parent=self.parent)
+                    notifySend(
+                        QCoreApplication.translate('progress_src_ui_tr', 'Aria2 disconnected!'),
+                        QCoreApplication.translate(
+                            'progress_src_ui_tr',
+                            'Persepolis is trying to connect! be patient!',
+                        ),
+                        10000,
+                        'warning',
+                        parent=self.parent,
+                    )
                 else:
-                    notifySend(QCoreApplication.translate('progress_src_ui_tr', 'Aria2 did not respond!'),
-                               QCoreApplication.translate('progress_src_ui_tr', 'Please try again.'), 10000,
-                               'warning', parent=self.parent)
+                    notifySend(
+                        QCoreApplication.translate('progress_src_ui_tr', 'Aria2 did not respond!'),
+                        QCoreApplication.translate('progress_src_ui_tr', 'Please try again.'),
+                        10000,
+                        'warning',
+                        parent=self.parent,
+                    )
 
     def pausePushButtonPressed(self, _button: QPushButton) -> None:
-
         if self.status == DownloadStatus.Downloading:
             answer = ghermez.downloadPause(self.gid)
 
             # if aria2 did not respond , then this function is checking for aria2
             # availability , and if aria2 disconnected then aria2Disconnected is
             # executed
-            if not(answer):
+            if not (answer):
                 version_answer = ghermez.aria2Version()
                 if version_answer == 'did not respond':
                     self.parent.aria2Disconnected()
                     download.downloadStop(self.gid, self.parent)
-                    notifySend('Aria2 disconnected!', 'Persepolis is trying to connect! be patient!',
-                               10000, 'warning', parent=self.parent)
+                    notifySend(
+                        'Aria2 disconnected!',
+                        'Persepolis is trying to connect! be patient!',
+                        10000,
+                        'warning',
+                        parent=self.parent,
+                    )
                 else:
-                    notifySend(QCoreApplication.translate('progress_src_ui_tr', 'Aria2 did not respond!'),
-                               QCoreApplication.translate('progress_src_ui_tr', 'Try again!'), 10000,
-                               'critical', parent=self.parent)
+                    notifySend(
+                        QCoreApplication.translate('progress_src_ui_tr', 'Aria2 did not respond!'),
+                        QCoreApplication.translate('progress_src_ui_tr', 'Try again!'),
+                        10000,
+                        'critical',
+                        parent=self.parent,
+                    )
 
     def stopPushButtonPressed(self, _button: QPushButton) -> None:
-
-        download_dict = {'gid': self.gid,
-                'shutdown': 'canceled'}
+        download_dict = {'gid': self.gid, 'shutdown': 'canceled'}
 
         self.parent.temp_db.updateSingleTable(download_dict)
 
@@ -173,13 +186,15 @@ class ProgressWindow(ProgressWindow_Ui):
             version_answer = ghermez.aria2Version()
             if version_answer == 'did not respond':
                 self.parent.aria2Disconnected()
-                notifySend(QCoreApplication.translate('progress_src_ui_tr', 'Aria2 disconnected!'),
-                           QCoreApplication.translate('progress_src_ui_tr',
-                                                      'Persepolis is trying to connect! be patient!'),
-                           10000, 'warning', parent=self.parent)
+                notifySend(
+                    QCoreApplication.translate('progress_src_ui_tr', 'Aria2 disconnected!'),
+                    QCoreApplication.translate('progress_src_ui_tr', 'Persepolis is trying to connect! be patient!'),
+                    10000,
+                    'warning',
+                    parent=self.parent,
+                )
 
     def limitCheckBoxToggled(self, _checkBoxes: bool) -> None:
-
         # user checked limit_checkBox
         if self.limit_checkBox.isChecked():
             self.limit_frame.setEnabled(True)
@@ -212,8 +227,7 @@ class ProgressWindow(ProgressWindow_Ui):
             # write cancel value in data_base for this gid
             self.after_frame.setEnabled(False)
 
-            download_dict = {'gid': self.gid,
-                    'shutdown': 'canceled'}
+            download_dict = {'gid': self.gid, 'shutdown': 'canceled'}
 
             self.parent.temp_db.updateSingleTable(download_dict)
 
@@ -221,18 +235,18 @@ class ProgressWindow(ProgressWindow_Ui):
         self.after_pushButton.setEnabled(False)
 
         if os_type != OS.WINDOWS:  # For Linux and Mac OSX and FreeBSD and OpenBSD
-
             # get root password
-            passwd, ok = QInputDialog.getText(
-                self, 'PassWord', 'Please enter root password:', QLineEdit.Password)
+            passwd, ok = QInputDialog.getText(self, 'PassWord', 'Please enter root password:', QLineEdit.Password)
 
             if ok:
                 # check password is true or not!
-                pipe = subprocess.Popen(['sudo', '-S', 'echo', 'hello'],
-                                        stdout=subprocess.DEVNULL,
-                                        stdin=subprocess.PIPE,
-                                        stderr=subprocess.DEVNULL,
-                                        shell=False)
+                pipe = subprocess.Popen(
+                    ['sudo', '-S', 'echo', 'hello'],
+                    stdout=subprocess.DEVNULL,
+                    stdin=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    shell=False,
+                )
 
                 pipe.communicate(passwd.encode())
 
@@ -240,17 +254,22 @@ class ProgressWindow(ProgressWindow_Ui):
 
                 # Wrong password
                 while answer != 0:
-
                     passwd, ok = QInputDialog.getText(
-                        self, 'PassWord', 'Wrong Password!\nPlease try again.', QLineEdit.Password)
+                        self,
+                        'PassWord',
+                        'Wrong Password!\nPlease try again.',
+                        QLineEdit.Password,
+                    )
 
                     if ok:
                         # checking password
-                        pipe = subprocess.Popen(['sudo', '-S', 'echo', 'hello'],
-                                                stdout=subprocess.DEVNULL,
-                                                stdin=subprocess.PIPE,
-                                                stderr=subprocess.DEVNULL,
-                                                shell=False)
+                        pipe = subprocess.Popen(
+                            ['sudo', '-S', 'echo', 'hello'],
+                            stdout=subprocess.DEVNULL,
+                            stdin=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL,
+                            shell=False,
+                        )
 
                         pipe.communicate(passwd.encode())
 
@@ -261,7 +280,6 @@ class ProgressWindow(ProgressWindow_Ui):
                         break
 
                 if ok is not False:
-
                     # if user selects shutdown option after download progress,
                     # value of 'shutdown' will changed in temp_db for this gid
                     # and "wait" word will be written for this value.
